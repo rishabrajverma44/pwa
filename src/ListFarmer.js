@@ -1,0 +1,192 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { Container, Button, Form, Row, Col, Pagination, Image, } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+import { FaSearch } from "react-icons/fa";
+
+const ListFarmer = () => {
+  const navigate = useNavigate();
+  const [location, setLocation] = useState("");
+  const [number, setNumber] = useState("");
+  const [filteredFarmers, setFilteredFarmers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [farmersPerPage] = useState(5);
+
+  const getFarmersFromStorage = () => {
+    const storedFarmers = localStorage.getItem("farmer");
+    return storedFarmers ? JSON.parse(storedFarmers) : [];
+  };
+
+  useEffect(() => {
+    const allFarmers = getFarmersFromStorage();
+    const filtered = allFarmers.filter(
+      (farmer) =>
+        (!location || farmer.villageName === location) &&
+        (!number || farmer.farmerMobile.includes(number))
+    );
+    setFilteredFarmers(filtered);
+    setCurrentPage(1);
+  }, [location, number]);
+
+  const indexOfLastFarmer = currentPage * farmersPerPage;
+  const indexOfFirstFarmer = indexOfLastFarmer - farmersPerPage;
+  const currentFarmers = filteredFarmers.slice(
+    indexOfFirstFarmer,
+    indexOfLastFarmer
+  );
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const checkForFarmerData = () => {
+    if (filteredFarmers.length === 0 && location && number) {
+      Swal.fire({
+        icon: "warning",
+        title: "Farmer not found",
+        text: "No farmer found for the selected location and number.",
+        showConfirmButton: false,
+        footer:
+          '<button id="addFarmerBtn" class="swal2-styled swal2-confirm" style="background-color: #3085d6; color: white;">Add Farmer</button>',
+        customClass: {
+          footer: "swal2-footer",
+        },
+      }).then(() => { });
+      setTimeout(() => {
+        const addFarmerBtn = document.getElementById("addFarmerBtn");
+        if (addFarmerBtn) {
+          addFarmerBtn.addEventListener("click", () => {
+            navigate("/AddFarmer");
+          });
+        }
+      }, 100);
+    }
+  };
+
+  const handleFarmerClick = (farmer) => {
+    navigate("/FarmerDetails", { state: { farmer } });
+  };
+
+  return (
+    <Container className="my-4">
+      <div
+        style={{ cursor: "pointer", marginBottom: "10px" }}
+        onClick={() => navigate("/")}
+      >
+        <FontAwesomeIcon icon={faChevronLeft} style={{ marginRight: "5px" }} />
+        <b>List of Farmers</b>
+      </div>
+      <Row className="mb-3">
+        <Col md={4} xs={4}>
+          <Form.Group controlId="location">
+            <Form.Control
+              type="text"
+              placeholder="Location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={8} xs={8}>
+          <Form.Group controlId="number" style={{ position: "relative" }}>
+            <Form.Control
+              type="text"
+              placeholder="Search Mobile Number"
+              value={number}
+              onChange={(e) => setNumber(e.target.value)}
+              style={{ paddingLeft: "30px" }}
+            />
+            <FaSearch
+              style={{
+                position: "absolute",
+                left: "10px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                color: "#999",
+              }}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+      <div className="farmer-list">
+        {currentFarmers.length > 0
+          ? currentFarmers.map((farmer, index) => (
+            <div key={index}>
+              <div
+                className="farmer-card p-3 mb-2 d-flex align-items-center"
+                onClick={() => handleFarmerClick(farmer)}
+                style={{ cursor: "pointer" }}
+              >
+                {farmer.image ? (
+                  <Image
+                    src={farmer.image}
+                    roundedCircle
+                    style={{
+                      width: "80px",
+                      height: "80px",
+                      marginRight: "15px",
+                    }}
+                  />
+                ) : (
+
+                  <div
+                    style={{
+                      width: "80px",
+                      height: "80px",
+                      borderRadius: "50%",
+                      backgroundColor: "#ccc",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "24px",
+                      color: "#fff",
+                      marginRight: "15px",
+                    }}
+                  >
+                    {farmer.farmerName ? farmer.farmerName.charAt(0).toUpperCase() : ""}
+                  </div>
+                )}
+
+                <div>
+                  <h6 style={{ marginBottom: "5px" }}>{farmer.farmerName}</h6>
+                  <p style={{ marginBottom: "3px" }}>{farmer.farmerMobile}</p>
+                  <p style={{ marginBottom: "0" }}>{farmer.villageName}</p>
+                </div>
+              </div>
+              {index < currentFarmers.length - 1 && <hr />}
+            </div>
+          ))
+          : checkForFarmerData()}
+      </div>
+      <Pagination className="justify-content-center my-3">
+        {Array.from(
+          { length: Math.ceil(filteredFarmers.length / farmersPerPage) },
+          (_, i) => (
+            <Pagination.Item key={i + 1} onClick={() => paginate(i + 1)}>
+              {i + 1}
+            </Pagination.Item>
+          )
+        )}
+      </Pagination>
+      <Button
+        variant="primary"
+        onClick={() => navigate("/AddFromNew")}
+        style={{
+          marginTop: "20px",
+          width: "100%",
+          height: "50px",
+          background: "#279A82",
+          top: "710px",
+          left: "16px",
+          padding: "13px 21px",
+          gap: "0px",
+          borderRadius: "6px 6px 6px 6px",
+          opacity: 1,
+        }}
+      >
+        Add Farmer
+      </Button>
+    </Container>
+  );
+};
+
+export default ListFarmer;

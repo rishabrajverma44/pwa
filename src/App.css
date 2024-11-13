@@ -1,6 +1,6 @@
-.App {
+/* .App {
   text-align: center;
-}
+} */
 
 .App-logo {
   height: 40vmin;
@@ -11,6 +11,14 @@
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
+}
+
+.navbar a {
+  color: white;
+}
+
+.navbar a:hover {
+  color: rgb(21, 224, 224);
 }
 
 .App-header {
@@ -32,7 +40,99 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
 }
+
+.the-legend {
+  border-style: none;
+  border-width: 0;
+  font-size: 16px;
+  width: 100%;
+  font-weight: 900;
+  padding: 0 10px;
+  border: 1px solid #e0e0e0;
+}
+
+.the-fieldset {
+  border: 1px solid #e0e0e0;
+  padding: 10px;
+}
+
+.fieldsetcustom {
+  font-size: 16px;
+  width: 100%;
+  font-weight: 900;
+}
+
+Form.Label {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.bg-body-tertiary {
+  --bs-bg-opacity: 1;
+  background-color: rgb(11 67 122) !important;
+}
+
+.navbar a {
+  color: black;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+
+
+
+/* Responsive styles for small screens (348px and smaller) */
+@media (max-width: 360px) {
+  .container {
+    padding-right: 0.5rem !important;
+    /* Reduced padding */
+    padding-left: 0.5rem !important;
+    /* Reduced padding */
+  }
+
+  .navbar {
+    flex-direction: column;
+    /* Stack items vertically */
+  }
+
+  .navbar-nav {
+    flex-direction: column;
+    /* Stack nav links */
+    align-items: center;
+    /* Center align links */
+    width: 100%;
+    /* Full width */
+  }
+
+  .navbar-nav .nav-link {
+    padding: 0.5rem 0;
+    /* Reduced padding for links */
+    width: 100%;
+    /* Make links full width */
+    text-align: center;
+    /* Center text */
+  }
+
+  img {
+    width: 100%;
+    /* Responsive logo */
+    height: auto;
+    /* Maintain aspect ratio */
+  }
+}
+
+
+@media screen and (min-width: 480px) {
+  body {
+    background-color: lightgreen;
+  }
+}
+
