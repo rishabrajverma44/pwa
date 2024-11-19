@@ -1,6 +1,6 @@
 {
-  "short_name": "AgroTutor",
-  "name": "AgroTutor - Agriculture App",
+  "short_name": "PWA",
+  "name": "AgroTutor - App",
   "icons": [
     {
       "src": "agrotutor_logo.png",

@@ -6,9 +6,9 @@ import "./index.css";
 const HomeNew = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    document.body.style.overflow = "hidden"; 
+    document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = ""; 
+      document.body.style.overflow = "";
     };
   }, []);
 
@@ -31,7 +31,7 @@ const HomeNew = () => {
     <div
       id="backgroundimages"
       style={{
-        backgroundImage: `url('BG.png')`,
+        backgroundImage: `url(/images/BG.png)`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         height: "100vh",
@@ -99,7 +99,7 @@ const HomeNew = () => {
               </Button>
             </div>
             <div className="d-flex justify-content-center align-items-center mt-4">
-            <Button
+              <Button
                 variant="primary"
                 size="lg"
                 style={{
@@ -113,8 +113,8 @@ const HomeNew = () => {
               >
                 Document
               </Button>
-              </div>
-              <div className="d-flex justify-content-center align-items-center mt-4">
+            </div>
+            <div className="d-flex justify-content-center align-items-center mt-4">
               <Button
                 variant="primary"
                 size="lg"
@@ -129,7 +129,7 @@ const HomeNew = () => {
               >
                 Videos
               </Button>
-              </div>
+            </div>
           </Card.Body>
         </Card>
       </Container>

@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { Container, Button, Form, Row, Col, Pagination, Image, } from "react-bootstrap";
+import {
+  Container,
+  Button,
+  Form,
+  Row,
+  Col,
+  Pagination,
+  Image,
+} from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FaSearch } from "react-icons/fa";
@@ -50,7 +58,7 @@ const ListFarmer = () => {
         customClass: {
           footer: "swal2-footer",
         },
-      }).then(() => { });
+      }).then(() => {});
       setTimeout(() => {
         const addFarmerBtn = document.getElementById("addFarmerBtn");
         if (addFarmerBtn) {
@@ -69,7 +77,8 @@ const ListFarmer = () => {
   return (
     <Container className="my-4">
       <div
-        style={{ cursor: "pointer", marginBottom: "10px" }}
+        style={{ cursor: "pointer" }}
+        className="my-4"
         onClick={() => navigate("/")}
       >
         <FontAwesomeIcon icon={faChevronLeft} style={{ marginRight: "5px" }} />
@@ -110,51 +119,52 @@ const ListFarmer = () => {
       <div className="farmer-list">
         {currentFarmers.length > 0
           ? currentFarmers.map((farmer, index) => (
-            <div key={index}>
-              <div
-                className="farmer-card p-3 mb-2 d-flex align-items-center"
-                onClick={() => handleFarmerClick(farmer)}
-                style={{ cursor: "pointer" }}
-              >
-                {farmer.image ? (
-                  <Image
-                    src={farmer.image}
-                    roundedCircle
-                    style={{
-                      width: "80px",
-                      height: "80px",
-                      marginRight: "15px",
-                    }}
-                  />
-                ) : (
+              <div key={index}>
+                <div
+                  className="farmer-card p-3 mb-2 d-flex align-items-center"
+                  onClick={() => handleFarmerClick(farmer)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {farmer.image ? (
+                    <Image
+                      src={farmer.image}
+                      roundedCircle
+                      style={{
+                        width: "80px",
+                        height: "80px",
+                        marginRight: "15px",
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: "80px",
+                        height: "80px",
+                        borderRadius: "50%",
+                        backgroundColor: "#ccc",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "24px",
+                        color: "#fff",
+                        marginRight: "15px",
+                      }}
+                    >
+                      {farmer.farmerName
+                        ? farmer.farmerName.charAt(0).toUpperCase()
+                        : ""}
+                    </div>
+                  )}
 
-                  <div
-                    style={{
-                      width: "80px",
-                      height: "80px",
-                      borderRadius: "50%",
-                      backgroundColor: "#ccc",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "24px",
-                      color: "#fff",
-                      marginRight: "15px",
-                    }}
-                  >
-                    {farmer.farmerName ? farmer.farmerName.charAt(0).toUpperCase() : ""}
+                  <div>
+                    <h6 style={{ marginBottom: "5px" }}>{farmer.farmerName}</h6>
+                    <p style={{ marginBottom: "3px" }}>{farmer.farmerMobile}</p>
+                    <p style={{ marginBottom: "0" }}>{farmer.villageName}</p>
                   </div>
-                )}
-
-                <div>
-                  <h6 style={{ marginBottom: "5px" }}>{farmer.farmerName}</h6>
-                  <p style={{ marginBottom: "3px" }}>{farmer.farmerMobile}</p>
-                  <p style={{ marginBottom: "0" }}>{farmer.villageName}</p>
                 </div>
+                {index < currentFarmers.length - 1 && <hr />}
               </div>
-              {index < currentFarmers.length - 1 && <hr />}
-            </div>
-          ))
+            ))
           : checkForFarmerData()}
       </div>
       <Pagination className="justify-content-center my-3">

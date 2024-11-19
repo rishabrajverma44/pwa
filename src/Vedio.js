@@ -1,86 +1,74 @@
-import React, { useState , useEffect} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Container, Row, Col } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
-import { openDB } from 'idb';
+import { openDB } from "idb";
 
 const VedioViewer = () => {
   const navigate = useNavigate();
+  const videoRef = useRef(null);
 
-  const [videoUrl, setVideoUrl] = useState("/demo.mp4");
-  const [videoUrl1, setVideoUrl1] = useState("/newdemo.mp4");
-  const [activeButton, setActiveButton] = useState(1);
-
-  const saveVideosToIndexedDB = async () => {
-    try {
-      const db = await openDB("videoDatabase", 1, {
-        upgrade(db) {
-          if (!db.objectStoreNames.contains("videos")) {
-            db.createObjectStore("videos");
-          }
-        },
-      });
-
-      // Fetch the video files from public directory or other source
-      const response1 = await fetch("/demo.mp4");
-      const blob1 = await response1.blob();
-
-      const response2 = await fetch("/newdemo.mp4");
-      const blob2 = await response2.blob();
-
-      // Save the videos to IndexedDB
-      await db.put("videos", blob1, "demoVideo");
-      await db.put("videos", blob2, "demoVideo1");
-    } catch (error) {
-      console.error("Failed to save videos to IndexedDB:", error);
-    }
-  };
-
-
-  const getVideosFromIndexedDB = async () => {
-    try {
-      const db = await openDB("videoDatabase", 1);
-      const videoBlob = await db.get("videos", "demoVideo");
-      const videoBlob1 = await db.get("videos", "demoVideo1");
-
-      if (videoBlob) {
-        const videoURL = URL.createObjectURL(videoBlob);
-        setVideoUrl(videoURL);
-      }
-
-      if (videoBlob1) {
-        const videoURL1 = URL.createObjectURL(videoBlob1);
-        setVideoUrl1(videoURL1);
-      }
-      if (!videoBlob && !videoBlob1) {
-        console.log("Videos not found in IndexedDB.");
-      }
-    } catch (error) {
-      console.error("Failed to retrieve videos from IndexedDB:", error);
-    }
-  };
+  const [videoUrl, setVideoUrl] = useState(null);
+  const [videoUrl1, setVideoUrl1] = useState(null);
+  const [activeButton, setActiveButton] = useState(null);
 
   useEffect(() => {
-    saveVideosToIndexedDB();
+    const fetchVideos = async () => {
+      try {
+        const db = await openDB("videoDatabase", 1);
+        const videoBlob = await db.get("videos", "demoVideo");
+        const videoBlob1 = await db.get("videos", "demoVideo1");
+
+        if (videoBlob && videoBlob instanceof Blob) {
+          const videoURL = URL.createObjectURL(videoBlob);
+          setVideoUrl(videoURL);
+        } else {
+          console.error("demoVideo is not a Blob or not found.");
+        }
+
+        if (videoBlob1 && videoBlob1 instanceof Blob) {
+          const videoURL1 = URL.createObjectURL(videoBlob1);
+          setVideoUrl1(videoURL1);
+        } else {
+          console.error("demoVideo1 is not a Blob or not found.");
+        }
+
+        if (!videoBlob && !videoBlob1) {
+          console.log("Videos not found in IndexedDB.");
+        }
+      } catch (error) {
+        console.error("Failed to retrieve videos from IndexedDB:", error);
+      }
+    };
+
+    fetchVideos();
+    return () => {
+      if (videoUrl) URL.revokeObjectURL(videoUrl);
+      if (videoUrl1) URL.revokeObjectURL(videoUrl1);
+    };
   }, []);
 
+  const handleOpenVideo = (videoNumber) => {
+    setActiveButton(videoNumber);
 
-  const handleOpenVideo = (state) => {
-     setActiveButton(state)
-     getVideosFromIndexedDB();
-   
+    if (videoRef.current) {
+      videoRef.current.load();
+      videoRef.current.play();
+    }
   };
 
   return (
     <div>
       <Container className="my-4">
-     
         <div
           style={{ cursor: "pointer", marginBottom: "10px" }}
           onClick={() => navigate("/")}
         >
-          <FontAwesomeIcon icon={faChevronLeft} style={{ marginRight: "5px" }} />
+          <FontAwesomeIcon
+            icon={faChevronLeft}
+            style={{ marginRight: "5px" }}
+          />
           <b>Video Viewer</b>
         </div>
 
@@ -97,7 +85,7 @@ const VedioViewer = () => {
               border: "1px solid #279A82",
               color: activeButton === 1 ? "#FFFFFF" : "#279A82",
             }}
-            onClick={()=>handleOpenVideo(1)}
+            onClick={() => handleOpenVideo(1)}
           >
             Play Video 1
           </Button>
@@ -114,7 +102,7 @@ const VedioViewer = () => {
               border: "1px solid #279A82",
               color: activeButton === 2 ? "#FFFFFF" : "#279A82",
             }}
-            onClick={()=>handleOpenVideo(2)}
+            onClick={() => handleOpenVideo(2)}
           >
             Play Video 2
           </Button>
@@ -122,21 +110,23 @@ const VedioViewer = () => {
 
         <Row className="mt-4">
           <Col>
-            {videoUrl && (
-              <iframe
-                className="video-iframe"
+            {activeButton && (
+              <video
+                ref={videoRef}
+                className="video-player"
                 width="100%"
                 height="400"
-                src={activeButton==1?videoUrl:videoUrl1}
-                title="Video Player"
-                // frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+                controls
+              >
+                <source
+                  src={activeButton === 1 ? videoUrl : videoUrl1}
+                  type="video/mp4"
+                />
+                Your browser does not support the video tag.
+              </video>
             )}
           </Col>
         </Row>
-
       </Container>
     </div>
   );
