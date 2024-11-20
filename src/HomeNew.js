@@ -98,6 +98,20 @@ const HomeNew = () => {
                 List of Farmers
               </Button>
             </div>
+            <div>
+              <p
+                className="mt-3 text-center"
+                style={{
+                  fontFamily: "Inter",
+                  fontSize: "18px",
+                  fontWeight: 500,
+                  textAlign: "left",
+                  color: "#003B49",
+                }}
+              >
+                Learn more about sustainable intensification technologies
+              </p>
+            </div>
             <div className="d-flex justify-content-center align-items-center mt-4">
               <Button
                 variant="primary"
@@ -108,10 +122,12 @@ const HomeNew = () => {
                   background: "#FFFFFF",
                   border: "1px solid #279A82",
                   color: "#279A82",
+                  width: "100%",
+                  maxWidth: "200px",
                 }}
                 onClick={handleDocumentClick}
               >
-                Document
+                Resources
               </Button>
             </div>
             <div className="d-flex justify-content-center align-items-center mt-4">

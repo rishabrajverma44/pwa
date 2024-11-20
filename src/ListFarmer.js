@@ -13,6 +13,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FaSearch } from "react-icons/fa";
+import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
 const ListFarmer = () => {
   const navigate = useNavigate();
@@ -117,55 +118,73 @@ const ListFarmer = () => {
         </Col>
       </Row>
       <div className="farmer-list">
-        {currentFarmers.length > 0
-          ? currentFarmers.map((farmer, index) => (
-              <div key={index}>
-                <div
-                  className="farmer-card p-3 mb-2 d-flex align-items-center"
-                  onClick={() => handleFarmerClick(farmer)}
-                  style={{ cursor: "pointer" }}
-                >
-                  {farmer.image ? (
-                    <Image
-                      src={farmer.image}
-                      roundedCircle
-                      style={{
-                        width: "80px",
-                        height: "80px",
-                        marginRight: "15px",
-                      }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        width: "80px",
-                        height: "80px",
-                        borderRadius: "50%",
-                        backgroundColor: "#ccc",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "24px",
-                        color: "#fff",
-                        marginRight: "15px",
-                      }}
-                    >
-                      {farmer.farmerName
-                        ? farmer.farmerName.charAt(0).toUpperCase()
-                        : ""}
-                    </div>
-                  )}
-
-                  <div>
-                    <h6 style={{ marginBottom: "5px" }}>{farmer.farmerName}</h6>
-                    <p style={{ marginBottom: "3px" }}>{farmer.farmerMobile}</p>
-                    <p style={{ marginBottom: "0" }}>{farmer.villageName}</p>
+        {currentFarmers.length > 0 ? (
+          currentFarmers.map((farmer, index) => (
+            <div key={index}>
+              <div
+                className="farmer-card p-3 mb-2 d-flex align-items-center"
+                onClick={() => handleFarmerClick(farmer)}
+                style={{ cursor: "pointer" }}
+              >
+                {farmer.image ? (
+                  <Image
+                    src={farmer.image}
+                    roundedCircle
+                    style={{
+                      width: "80px",
+                      height: "80px",
+                      marginRight: "15px",
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: "80px",
+                      height: "80px",
+                      borderRadius: "50%",
+                      backgroundColor: "#ccc",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "24px",
+                      color: "#fff",
+                      marginRight: "15px",
+                    }}
+                  >
+                    {farmer.farmerName
+                      ? farmer.farmerName.charAt(0).toUpperCase()
+                      : ""}
                   </div>
+                )}
+
+                <div>
+                  <h6 style={{ marginBottom: "5px" }}>{farmer.farmerName}</h6>
+                  <p style={{ marginBottom: "3px" }}>{farmer.farmerMobile}</p>
+                  <p style={{ marginBottom: "0" }}>{farmer.villageName}</p>
                 </div>
-                {index < currentFarmers.length - 1 && <hr />}
               </div>
-            ))
-          : checkForFarmerData()}
+              {index < currentFarmers.length - 1 && <hr />}
+            </div>
+          ))
+        ) : (
+          <>
+            <div>
+              <div className="text-center">
+                <FontAwesomeIcon
+                  style={{ height: "50px", color: "#AFAFAF" }}
+                  icon={faTriangleExclamation}
+                />
+                <h4>Farmer is not here</h4>
+                <p style={{ color: "#AFAFAF" }}>
+                  We couldn't find any farmers in this area at the moment.
+                  Please check again later or try searching with different
+                  criteria. We're constantly updating our listings to provide
+                  the most accurate and up-to-date results.
+                </p>
+              </div>
+            </div>
+          </>
+        )}
       </div>
       <Pagination className="justify-content-center my-3">
         {Array.from(

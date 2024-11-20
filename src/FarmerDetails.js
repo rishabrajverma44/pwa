@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Container, Card, Row, Col, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 import {
   faLocationDot,
   faThumbsUp,
@@ -13,308 +14,291 @@ const FarmerDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const farmer = location.state?.farmer || {};
-
-  let recommendations = {};
-  let hedingtest = {};
-  if (
-    farmer.agroClimaticZone == "Lakeshore" &&
-    farmer.soilTexture == "Clayey"
-  ) {
-    hedingtest = {
-      testlableHedind: ["Land Preparation"],
-      Choice_of_Combinations: [],
-      Choice_of_Carop: ["Choice of Doubled-up Legume Rotation (DLR) Crops"],
-      NutrientManagement: ["Nutrient Management"],
-      Agroforestry: ["Agroforestry"],
-      notSuitable_testlableHedind: [],
-      notSuitable_Choice_of_Combinations: [
-        "Choice of planting density and Combinations",
-      ],
-      notSuitable_Choice_of_Carop: [],
-      notSuitable_NutrientManagement: [],
-      notSuitable_Agroforestry: [],
-    };
-    recommendations = {
-      suitable: {
-        landPreparation: ["Ripping", "Permanently raised beds"],
-        dLRCombinations: [],
-        dLRCrops: [
-          "Doubled-up legume rotation: Pigeon pea + soybean ",
-          "Doubled-up legume rotation: Pigeon pea + cowpea",
-          "Doubled-up legume rotation: Pigeon pea + groundnut",
+  const [sectionOne, setSectionOne] = useState({
+    Land_Preparation: [
+      { green_card: ["Ripping"] },
+      {
+        yellow_card: [
+          "Conservation Agriculture",
+          "Planting basins",
+          "Tied ridges",
         ],
-        nutrientManagement: [
-          "Inorganic Fertilizer - NPK & Urea Mulching",
+      },
+      { gray_card: ["Permanently raised beds"] },
+    ],
+    "Choice of Doubled -up Legume Rotation (DLR) Crops": [
+      {
+        green_card: [
+          "Doubled-up legume rotation: Pigeon pea + soybean",
+          "Doubled -up legume rotation: Pigeon pea + cowpea",
+        ],
+      },
+      {
+        gray_card: ["Doubled -up legume rotation: Pigeon pea + groundnut"],
+      },
+    ],
+    Nutrient_Management: [
+      {
+        green_card: [
+          "Inorganic Fertilizer - NPK & Urea",
           "Livestock Manure: High quality manure (poultry/pig)",
           "Combined Fertilizer: Low quality manure + N fertilizer",
+          "Combined Fertilizer: Low quality manure + N fertilizer",
+        ],
+        yellow_card: ["Combined Fertilizer: Green manuring legumes"],
+      },
+    ],
+    Agroforestry: [
+      {
+        green_card: ["Gliricidia-maizeintercropping"],
+      },
+      {
+        yellow_card: ["Biomass transfer"],
+      },
+    ],
+  });
+  const [sectionTwo, setSectionTwo] = useState({
+    Land_Preparation: [
+      { green_card: ["Conservation Agriculture"] },
+      {
+        yellow_card: ["Planting basins"],
+      },
+      { gray_card: ["Ripping", "Tied ridges", "Permanently raised beds"] },
+    ],
+    "Choice of Doubled -up Legume Rotation (DLR) Crops": [
+      {
+        green_card: ["Doubled -up legume rotation: Pigeon pea + groundnut"],
+      },
+      {
+        gray_card: [
+          "Doubled -up legume rotation: Pigeon pea + cowpea",
+          "Doubled -up legume rotation: Pigeon pea + cowpea",
+        ],
+      },
+    ],
+    Nutrient_Management: [
+      {
+        green_card: [
+          "Livestock Manure: High quality manure (poultry/pig)",
           "Combined Fertilizer: High quality manure + N fertilizer",
         ],
-        agroforestry: ["Gliricidia-maize intercropping"],
-      },
-
-      notSuitable: {
-        landPreparation1: [],
-        ontsuitabledLRCombination: [
-          "Planting Density: Low maize density",
-          "Planting Density: Low legume density",
-          "Planting Density: High legume density",
+        gray_card: [
+          "Combined Fertilizer: Low quality manure + N fertilizer",
+          "Nutrient Management: Inorganic Fertilizer - NPK & Urea",
+          "Combined Fertilizer: Green manuring legumes",
         ],
-        notdLRCrops: [],
-        notnutrientManagement: [],
-        notagroforestry: [],
       },
-    };
+    ],
+    Agroforestry: [
+      {
+        green_card: ["Gliricidia-maizeintercropping"],
+      },
+      {
+        gray_card: ["Biomass transfer"],
+      },
+    ],
+  });
+  const [sectionThree, setSectionThree] = useState({
+    Land_Preparation: [
+      { green_card: ["Ripping"] },
+      {
+        yellow_card: ["Planting basins", "Conservation Agriculture"],
+      },
+      { gray_card: ["Permanently raised beds", "Tied ridges"] },
+    ],
+    "Choice of Doubled -up Legume Rotation (DLR) Crops": [
+      {
+        green_card: ["Doubled -up legume rotation: Pigeon pea + cowpea"],
+      },
+      { yellow_card: ["Doubled -up legume rotation: Pigeon pea + soybean"] },
+      {
+        gray_card: ["Doubled -up legume rotation: Pigeon pea + groundnut"],
+      },
+    ],
+    Nutrient_Management: [
+      {
+        green_card: [
+          "Management: Inorganic Fertilizer - NPK",
+          "Combined Fertilizer: High quality manure + N fertilizer",
+        ],
+        gray_card: [
+          "Livestock Manure: High quality manure (poultry/pig)",
+          "CombinedFertilizer:Greenmanuring",
+        ],
+        yellow_card: ["Combined Fertilizer: Low quality manure + N fertilizer"],
+      },
+    ],
+    Agroforestry: [
+      {
+        green_card: ["Gliricidia-maizeintercropping"],
+      },
+      {
+        gray_card: ["Biomass transfer"],
+      },
+    ],
+  });
+  const [sectionFour, setSectionFour] = useState({
+    Land_Preparation: [
+      { green_card: ["Conservation Agriculture"] },
+      { gray_card: ["Ripping", "Permanently raised beds"] },
+      {
+        yellow_card: ["Tied ridges", "Planting basins"],
+      },
+    ],
+    "Choice of Doubled -up Legume Rotation (DLR) Crops": [
+      {
+        green_card: [
+          "Doubled -up legume rotation: Pigeon pea + groundnut",
+          "Doubled -up legume rotation: Pigeon pea + cowpea",
+        ],
+      },
+      { yellow_card: ["Doubled -up legume rotation: Pigeon pea + soybean"] },
+    ],
+    Nutrient_Management: [
+      {
+        green_card: [
+          "Inorganic Fertilizer - NPK & Urea",
+          "Livestock Manure: High quality manure (poultry/pig)",
+          "Combined Fertilizer: High quality manure + N fertilizer",
+        ],
+        yellow_card: ["Combined Fertilizer: Low quality manure + N fertilizer"],
+        gray_card: ["Combined Fertilizer : Greenmanuring"],
+      },
+    ],
+    Agroforestry: [
+      {
+        green_card: ["Gliricidia-maizeintercropping"],
+      },
+      {
+        gray_card: ["Biomass transfer"],
+      },
+    ],
+  });
+  const [sectionFive, setSectionFive] = useState({
+    Land_Preparation: [
+      { green_card: ["Permanently raised beds"] },
+      {
+        yellow_card: ["Ripping"],
+      },
+      {
+        gray_card: [
+          "Conservation Agriculture",
+          "Tied ridges",
+          "Planting basins",
+        ],
+      },
+    ],
+    "Choice of Doubled -up Legume Rotation (DLR) Crops": [
+      {
+        green_card: ["Planting Density: High maize density"],
+      },
+      {
+        yellow_card: [
+          "Planting Density: High legume density",
+          "Doubled -up legume rotation: Pigeon pea + soybean",
+        ],
+      },
+      {
+        gray_card: ["Doubled -up legume rotation: Pigeon pea + cowpea"],
+      },
+    ],
+    Nutrient_Management: [
+      {
+        green_card: [
+          "Nutrient Management: Inorganic Fertilizer - NPK & Urea",
+          "Combined Fertilizer: High quality manure + N fertilizer",
+        ],
+        yellow_card: [
+          "Combined Fertilizer: Low quality manure + N fertilizer",
+          "Combined Fertilizer: Green manuring",
+        ],
+        gray_card: ["Livestock Manure: High quality manure (poultry/pig)"],
+      },
+    ],
+    Agroforestry: [
+      {
+        green_card: ["Gliricidia-maize intercropping"],
+      },
+      { yellow_card: ["Biomass transfer"] },
+    ],
+  });
+  const [sectionSix, setSectionSix] = useState({
+    Land_Preparation: [
+      { green_card: ["Conservation Agriculture"] },
+      {
+        yellow_card: [
+          "Ripping",
+          "Tied ridges",
+          "Planting basins",
+          "Permanently raised beds",
+        ],
+      },
+    ],
+    "Choice of Doubled -up Legume Rotation (DLR) Crops": [
+      {
+        yellow_card: [
+          "Doubled -up legume rotation: Pigeon pea + groundnut",
+          "Doubled -up legume rotation: Pigeon pea + soybean",
+        ],
+        gray_card: ["Doubled -up legume rotation: Pigeon pea + cowpea"],
+      },
+    ],
+    Nutrient_Management: [
+      {
+        green_card: [
+          "Nutrient Management: Inorganic Fertilizer - NPK & Ur",
+          "Livestock Manure: High quality manure (poultry/pig)",
+          "Combined Fertilizer: High quality manure + N fertilizer",
+        ],
+        yellow_card: ["Combined Fertilizer: Low quality manure + N fertilizer"],
+        gray_card: ["Combined Fertilizer: Green manuring legumes"],
+      },
+    ],
+    Agroforestry: [
+      {
+        green_card: ["Gliricidia-maize intercropping", "Biomass transfer"],
+      },
+    ],
+  });
+  const [sections, setSections] = useState({});
+  const LoadData = () => {
+    if (
+      farmer.agroClimaticZone == "Lakeshore" &&
+      farmer.soilTexture == "Clayey"
+    ) {
+      setSections(sectionOne);
+    } else if (
+      farmer.agroClimaticZone == "Lakeshore" &&
+      farmer.soilTexture == "Sandy"
+    ) {
+      setSections(sectionTwo);
+    } else if (
+      farmer.agroClimaticZone == "Mid-Altitude" &&
+      farmer.soilTexture == "Clayey"
+    ) {
+      setSections(sectionThree);
+    } else if (
+      farmer.agroClimaticZone == "Mid-Altitude" &&
+      farmer.soilTexture == "Sandy"
+    ) {
+      setSections(sectionFour);
+    } else if (
+      farmer.agroClimaticZone == "High-Altitude" &&
+      farmer.soilTexture == "Clayey"
+    ) {
+      setSections(sectionFive);
+    } else if (
+      farmer.agroClimaticZone == "High-Altitude" &&
+      farmer.soilTexture == "Sandy"
+    ) {
+      setSections(sectionSix);
+    }
+  };
 
-    // } else if (
-    //   farmer.agroClimaticZone == "Lakeshore" &&
-    //   farmer.soilTexture == "Sandy"
-    // ) {
-    //   hedingtest = {
-    //     testlableHedind: ["Land Preparation"],
-    //     Choice_of_Combinations: [],
-    //     Choice_of_Carop: ["Choice of Doubled-up Legume Rotation (DLR) Crops"],
-    //     NutrientManagement: ["Nutrient Management"],
-    //     Agroforestry: ["Agroforestry"],
+  useEffect(() => {
+    LoadData();
+  }, []);
 
-    //     notSuitable_testlableHedind: ["Land Preparation"],
-    //     notSuitable_Choice_of_Combinations: [
-    //       "Choice of planting density and Combinations",
-    //     ],
-    //     notSuitable_Choice_of_Carop: [],
-    //     notSuitable_NutrientManagement: ["Nutrient Management"],
-    //     notSuitable_Agroforestry: ["Agroforestry"],
-    //   };
-    //   recommendations = {
-    //     suitable: {
-    //       landPreparation: ["Conservation Agriculture", "Ripping", "Tied ridges"],
-    //       dLRCombinations: [],
-
-    //       dLRCrops: [
-    //         "Doubled-up legume rotation: Pigeon pea + soybean",
-    //         "Doubled-up legume rotation: Pigeon pea + cowpea",
-    //         "Doubled-up legume rotation: Pigeon pea + groundnut",
-    //       ],
-    //       nutrientManagement: [
-    //         "Livestock Manure: High quality manure (poultry/pig)",
-    //         "Combined Fertilizer: Low quality manure + N fertilizer",
-    //         "Combined Fertilizer: High quality manure + N fertilizer",
-    //         " Nutrient Management: Inorganic Fertilizer - NPK & Urea",
-    //       ],
-    //       agroforestry: ["Gliricidia-maize intercropping"],
-    //     },
-
-    //     notSuitable: {
-    //       landPreparation1: ["Permanently raised beds "],
-    //       ontsuitabledLRCombination: [
-    //         "Planting Density: Low maize density",
-    //         "Planting Density: Low legume density",
-    //         "Planting Density: High legume density",
-    //       ],
-    //       notdLRCrops: [],
-    //       notnutrientManagement: [
-    //         "  Combined Fertilizer: Green manuring legumes",
-    //       ],
-    //       notagroforestry: ["Biomass transfer"],
-    //     },
-    //   };
-    // } else if (
-    //   farmer.agroClimaticZone == "Mid-Altitude" &&
-    //   farmer.soilTexture == "Clayey"
-    // ) {
-    //   hedingtest = {
-    //     testlableHedind: ["Land Preparation"],
-    //     Choice_of_Combinations: [],
-    //     Choice_of_Carop: ["Choice of Doubled-up Legume Rotation (DLR) Crops"],
-    //     NutrientManagement: ["Nutrient Management"],
-    //     Agroforestry: ["Agroforestry"],
-
-    //     notSuitable_testlableHedind: ["Land Preparation"],
-    //     notSuitable_Choice_of_Combinations: [
-    //       "Choice of planting density and Combinations",
-    //     ],
-    //     notSuitable_Choice_of_Carop: [],
-    //     notSuitable_NutrientManagement: [],
-    //     notSuitable_Agroforestry: [],
-    //   };
-
-    //   recommendations = {
-    //     suitable: {
-    //       landPreparation: ["Ripping", "Permanently raised beds"],
-    //       dLRCombinations: [],
-
-    //       dLRCrops: [
-    //         "Doubled-up legume rotation: Pigeon pea + cowpea",
-    //         "Doubled-up legume rotation: Pigeon pea + groundnut",
-    //       ],
-    //       nutrientManagement: [
-    //         "Nutrient Management: Inorganic Fertilizer - NPK & Urea",
-    //         " Combined Fertilizer: High quality manure + N fertilizer",
-    //         "Livestock Manure: High quality manure (poultry/pig)",
-    //         " Combined Fertilizer: Green manuring legumes ",
-    //       ],
-    //       agroforestry: ["Gliricidia-maize intercropping"],
-    //     },
-
-    //     notSuitable: {
-    //       landPreparation1: ["Tied ridges"],
-    //       ontsuitabledLRCombination: [
-    //         "Planting Density: Low maize density",
-    //         "Planting Density: Low legume density",
-    //       ],
-    //       notdLRCrops: [],
-    //       notnutrientManagement: [],
-    //       notagroforestry: [],
-    //     },
-    //   };
-    // } else if (
-    //   farmer.agroClimaticZone == "Mid-Altitude" &&
-    //   farmer.soilTexture == "Sandy"
-    // ) {
-    //   hedingtest = {
-    //     testlableHedind: ["Land Preparation"],
-    //     Choice_of_Combinations: [],
-    //     Choice_of_Carop: ["Choice of Doubled-up Legume Rotation (DLR) Crops"],
-    //     NutrientManagement: ["Nutrient Management"],
-    //     Agroforestry: ["Agroforestry"],
-
-    //     notSuitable_testlableHedind: ["Land Preparation"],
-    //     notSuitable_Choice_of_Combinations: [
-    //       "Choice of planting density and Combinations",
-    //     ],
-    //     notSuitable_Choice_of_Carop: [],
-    //     notSuitable_NutrientManagement: [],
-    //     notSuitable_Agroforestry: ["Agroforestry"],
-    //   };
-    //   recommendations = {
-    //     suitable: {
-    //       landPreparation: ["Conservation Agriculture", "Ripping"],
-    //       dLRCombinations: [],
-    //       dLRCrops: [
-    //         "Doubled-up legume rotation: Pigeon pea + groundnut",
-    //         "Doubled-up legume rotation: Pigeon pea + cowpea",
-    //       ],
-    //       nutrientManagement: [
-    //         "Nutrient Management: Inorganic Fertilizer - NPK & Urea",
-    //         "Livestock Manure: High quality manure (poultry/pig)",
-    //         " Combined Fertilizer: High quality manure + N fertilizer",
-    //         " Combined Fertilizer: Green manuring legumes ",
-    //       ],
-    //       agroforestry: ["Gliricidia-maize intercropping"],
-    //     },
-
-    //     notSuitable: {
-    //       landPreparation1: ["Permanently raised beds "],
-    //       ontsuitabledLRCombination: [
-    //         "Planting Density: Low maize density",
-    //         "Planting Density: Low legume density",
-    //         "Planting Density: High legume density",
-    //       ],
-    //       notdLRCrops: [],
-    //       notnutrientManagement: [],
-    //       notagroforestry: ["Biomass transfer "],
-    //     },
-    //   };
-    // } else if (
-    //   farmer.agroClimaticZone == "High-Altitude" &&
-    //   farmer.soilTexture == "Clayey"
-    // ) {
-    //   hedingtest = {
-    //     testlableHedind: ["Land Preparation"],
-    //     Choice_of_Combinations: ["Choice of planting density and Combinations"],
-    //     Choice_of_Carop: ["Choice of Doubled-up Legume Rotation (DLR) Crops"],
-    //     NutrientManagement: ["Nutrient Management"],
-    //     Agroforestry: ["Agroforestry"],
-
-    //     notSuitable_testlableHedind: ["Land Preparation"],
-    //     notSuitable_Choice_of_Combinations: [
-    //       "Choice of planting density and Combinations",
-    //     ],
-    //     notSuitable_Choice_of_Carop: [
-    //       "Choice of Doubled-up Legume Rotation (DLR) Crops",
-    //     ],
-    //     notSuitable_NutrientManagement: [],
-    //     notSuitable_Agroforestry: [],
-    //   };
-    //   recommendations = {
-    //     suitable: {
-    //       landPreparation2: ["Permanently raised beds"],
-    //       dLRCombinations: ["Planting Density: High maize density"],
-    //       dLRCrops: [],
-    //       nutrientManagement: [
-    //         "Nutrient Management: Inorganic Fertilizer - NPK & Urea",
-    //         "Livestock Manure: High quality manure (poultry/pig)",
-    //         " Combined Fertilizer: High quality manure + N fertilizer",
-    //       ],
-    //       agroforestry: ["Gliricidia-maize intercropping"],
-    //     },
-
-    //     notSuitable: {
-    //       landPreparation1: [
-    //         "Conservation Agriculture",
-    //         "Tied ridges",
-    //         "Planting basins",
-    //       ],
-    //       ontsuitabledLRCombination: [
-    //         "Planting Density: Low maize density",
-    //         "Planting Density: Low legume density",
-    //       ],
-    //       notdLRCrops: [" Doubled-up legume rotation: Pigeon pea + cowpea"],
-
-    //       notnutrientManagement: [],
-    //       notagroforestry: [],
-    //     },
-    //   };
-    // } else if (
-    //   farmer.agroClimaticZone == "High-Altitude" &&
-    //   farmer.soilTexture == "Clayey"
-    // ) {
-    //   hedingtest = {
-    //     testlableHedind: ["Land Preparation"],
-    //     Choice_of_Combinations: ["Choice of planting density and Combinations"],
-    //     Choice_of_Carop: ["Choice of Doubled-up Legume Rotation (DLR) Crops"],
-    //     NutrientManagement: ["Nutrient Management"],
-    //     Agroforestry: ["Agroforestry"],
-
-    //     notSuitable_testlableHedind: [],
-    //     notSuitable_Choice_of_Combinations: [
-    //       "Choice of planting density and Combinations",
-    //     ],
-    //     notSuitable_Choice_of_Carop: [
-    //       "Choice of Doubled-up Legume Rotation (DLR) Crops",
-    //     ],
-    //     notSuitable_NutrientManagement: ["Nutrient Management"],
-    //     notSuitable_Agroforestry: ["Agroforestry"],
-    //   };
-    //   recommendations = {
-    //     suitable: {
-    //       landPreparation2: ["Conservation Agriculture"],
-
-    //       dLRCombinations: [
-    //         "Planting Density: High maize density",
-    //         "Doubled-up legume rotation: Pigeon pea + cowpea",
-    //       ],
-    //       dLRCrops: [],
-
-    //       nutrientManagement: [
-    //         "Nutrient Management: Inorganic Fertilizer - NPK & Urea",
-    //         "  Livestock Manure: High quality manure (poultry/pig)",
-    //         "  Combined Fertilizer: High quality manure + N fertilizer ",
-    //       ],
-    //       agroforestry: ["Gliricidia-maize intercropping"],
-    //     },
-
-    //     notSuitable: {
-    //       landPreparation1: [],
-    //       ontsuitabledLRCombination: [
-    //         "Planting Density: Low maize density",
-    //         "Planting Density: Low legume density",
-    //       ],
-    //       notdLRCrops: ["Doubled-up legume rotation: Pigeon pea + cowpea"],
-    //       notnutrientManagement: [" Combined Fertilizer: Green manuring legumes"],
-    //       notagroforestry: ["Biomass transfer"],
-    //     },
-    //   };
-  }
   return (
     <Container className="my-5">
       <div
@@ -349,253 +333,118 @@ const FarmerDetails = () => {
       </Card>
 
       <div className="my-3">
-        {/* <h6> {farmer.farmerName}</h6> */}
-        <Row className="mb-3">
-          <Col md={12}>
-            <h5 className="mb-3 fw-bold">{hedingtest?.testlableHedind}</h5>
-          </Col>
-          <Col md={6} xs={6}>
-            {hedingtest?.testlableHedind?.length > 0 && (
-              <Card className="flex-fill h-100">
-                <div
-                  className="d-flex align-items-center rounded-top gap-2"
-                  style={doCardStyle}
-                >
-                  <FontAwesomeIcon icon={faThumbsUp} />
-                  <h6 className="mb-0">Better bets</h6>
-                </div>
-                <Card.Body className="p-0 m-0 bg-card-body">
-                  <Card.Text className="p-2" style={{ color: "#6B7280" }}>
-                    <span className="py-2">
-                      {recommendations?.suitable?.landPreparation?.map(
-                        (prep, idx) => (
-                          <p key={idx} className="p-0 m-0">
-                            {idx + 1}. {prep}
-                          </p>
-                        )
-                      )}
-                    </span>
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            )}
-          </Col>
-          <Col md={6} xs={6}>
-            {hedingtest?.notSuitable_testlableHedind?.length > 0 && (
-              <Card className="flex-fill h-100">
-                <div
-                  className="d-flex align-items-center rounded-top gap-2"
-                  style={dontCardStyle}
-                >
-                  <FontAwesomeIcon
-                    icon={faThumbsUp}
-                    transform={{ rotate: 180 }}
-                  />
-                  <h6 className="mb-0" style={{ backgroundColor: "#FAE681" }}>
-                    Practises with challenges
-                  </h6>
-                </div>
-                <Card.Body className="p-0 m-0 card-body-footer">
-                  <Card.Text className="p-2" style={{ color: "#6B7280" }}>
-                    {recommendations?.notSuitable &&
-                      recommendations?.notSuitable?.landPreparation1?.map(
-                        (prep7, idx7) => (
-                          <p key={idx7} className="p-0 m-0">
-                            {idx7 + 1}. {prep7}
-                          </p>
-                        )
-                      )}
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            )}
-          </Col>
-        </Row>
-        <Row className="mb-3">
-          <Col md={12}>
-            <h5 className="mb-3 fw-bold">{hedingtest?.Choice_of_Carop}</h5>
-          </Col>
-          <Col md={6} xs={6}>
-            {hedingtest?.Choice_of_Carop?.length > 0 && (
-              <Card className="flex-fill h-100">
-                <div
-                  className="d-flex align-items-center rounded-top gap-2"
-                  style={doCardStyle}
-                >
-                  <FontAwesomeIcon icon={faThumbsUp} />
-                  <h6 className="mb-0">Better bets</h6>
-                </div>
-                <Card.Body className="p-0 m-0 bg-card-body">
-                  <Card.Text className="p-2" style={{ color: "#6B7280" }}>
-                    <span className="py-2">
-                      {recommendations?.suitable?.dLRCrops?.map(
-                        (prep1, idx1) => (
-                          <p key={idx1} className="p-0 m-0">
-                            {idx1 + 1}. {prep1}
-                          </p>
-                        )
-                      )}
-                    </span>
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            )}
-          </Col>
+        {Object.entries(sections).map(([sectionName, cards]) => (
+          <Card key={sectionName} className="mb-6 p-2 my-2">
+            <h2 className="text-xl font-bold mb-4">
+              {sectionName.replace(/_/g, " ")}
+            </h2>
+            <div>
+              <Row className="mb-4">
+                {cards.map((cardObj, index) =>
+                  Object.entries(cardObj).map(([cardType, items]) => {
+                    if (cardType === "green_card") {
+                      return (
+                        <Col key={`green-card-${index}`} md={12}>
+                          <Card className="flex-fill h-100">
+                            <div
+                              className="rounded-top py-2 px-4"
+                              style={greenCardStyle}
+                            >
+                              <div className="d-flex align-items-center gap-2">
+                                <FontAwesomeIcon icon={faThumbsUp} />
+                                <h6 className="mb-0">BEST BET</h6>
+                              </div>
+                              <p className="p-0 m-0">
+                                Encouraged practices that can help
+                              </p>
+                            </div>
+                            <Card.Body className="p-0 m-0 bg-card-body">
+                              <Card.Text className="p-2">
+                                {items.map((item, id) => (
+                                  <p key={id} className="p-0 m-0">
+                                    {id + 1}.{" "}
+                                    <span style={{ color: "#6B7280" }}>
+                                      {item}
+                                    </span>
+                                  </p>
+                                ))}
+                              </Card.Text>
+                            </Card.Body>
+                          </Card>
+                        </Col>
+                      );
+                    }
+                    return null;
+                  })
+                )}
+              </Row>
 
-          <Col md={6} xs={6}>
-            {hedingtest?.notSuitable_Choice_of_Combinations?.length > 0 && (
-              <Card className="flex-fill h-100">
-                <div
-                  className="d-flex align-items-center rounded-top gap-2"
-                  style={dontCardStyle}
-                >
-                  <FontAwesomeIcon
-                    icon={faThumbsUp}
-                    transform={{ rotate: 180 }}
-                  />
-                  <h6 className="mb-0" style={{ backgroundColor: "#FAE681" }}>
-                    Practises with challenges
-                  </h6>
-                </div>
-                <Card.Body className="p-0 m-0 card-body-footer">
-                  <Card.Text className="p-2" style={{ color: "#6B7280" }}>
-                    {recommendations?.notSuitable &&
-                      recommendations?.notSuitable?.ontsuitabledLRCombination?.map(
-                        (prep6, idx6) => (
-                          <p key={idx6} className="p-0 m-0">
-                            {idx6 + 1}. {prep6}
-                          </p>
-                        )
-                      )}
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            )}
-          </Col>
-        </Row>
-        <Row className="mb-3"></Row>
-        <Row className="mb-3">
-          <Col md={12}>
-            <h5 className="mb-3 fw-bold">{hedingtest?.NutrientManagement}</h5>
-          </Col>
-          <Col md={6} xs={6}>
-            {hedingtest?.NutrientManagement?.length > 0 && (
-              <Card className="flex-fill h-100">
-                <div
-                  className="d-flex align-items-center rounded-top gap-2"
-                  style={doCardStyle}
-                >
-                  <FontAwesomeIcon icon={faThumbsUp} />
-                  <h6 className="mb-0">Better bets</h6>
-                </div>
-                <Card.Body className="p-0 m-0 bg-card-body">
-                  <Card.Text className="p-2" style={{ color: "#6B7280" }}>
-                    <span className="py-2">
-                      {recommendations?.suitable?.nutrientManagement?.map(
-                        (prep2, idx2) => (
-                          <p key={idx2} className="p-0 m-0">
-                            {idx2 + 1}. {prep2}
-                          </p>
-                        )
-                      )}
-                    </span>
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            )}
-          </Col>
-          <Col md={6} xs={6}>
-            {hedingtest?.notSuitable_NutrientManagement?.length > 0 && (
-              <Card className="flex-fill h-100">
-                <div
-                  className="d-flex align-items-center rounded-top gap-2"
-                  style={dontCardStyle}
-                >
-                  <FontAwesomeIcon
-                    icon={faThumbsUp}
-                    transform={{ rotate: 180 }}
-                  />
-                  <h6 className="mb-0" style={{ backgroundColor: "#FAE681" }}>
-                    Practises with challenges
-                  </h6>
-                </div>
-                <Card.Body className="p-0 m-0 card-body-footer">
-                  <Card.Text className="p-2" style={{ color: "#6B7280" }}>
-                    {recommendations?.notSuitable &&
-                      recommendations?.notSuitable?.notnutrientManagement?.map(
-                        (prep6, idx6) => (
-                          <p key={idx6} className="p-0 m-0">
-                            {idx6 + 1}. {prep6}
-                          </p>
-                        )
-                      )}
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            )}
-          </Col>
-        </Row>
-        <Row className="mb-3">
-          <Col md={12}>
-            <h5 className="mb-3 fw-bold">{hedingtest?.Agroforestry}</h5>
-          </Col>
-          <Col md={6} xs={6}>
-            {hedingtest?.Agroforestry?.length > 0 && (
-              <Card className="flex-fill h-100">
-                <div
-                  className="d-flex align-items-center rounded-top gap-2"
-                  style={doCardStyle}
-                >
-                  <FontAwesomeIcon icon={faThumbsUp} />
-                  <h6 className="mb-0">Better bets</h6>
-                </div>
-                <Card.Body className="p-0 m-0 bg-card-body">
-                  <Card.Text className="p-2" style={{ color: "#6B7280" }}>
-                    <span className="py-2">
-                      {recommendations?.suitable?.agroforestry?.map(
-                        (prep3, idx3) => (
-                          <p key={idx3} className="p-0 m-0">
-                            {idx3 + 1}. {prep3}
-                          </p>
-                        )
-                      )}
-                    </span>
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            )}
-          </Col>
-          <Col md={6} xs={6}>
-            {hedingtest?.notSuitable_Agroforestry?.length > 0 && (
-              <Card className="flex-fill h-100">
-                <div
-                  className="d-flex align-items-center rounded-top gap-2"
-                  style={dontCardStyle}
-                >
-                  <FontAwesomeIcon
-                    icon={faThumbsUp}
-                    transform={{ rotate: 180 }}
-                  />
-                  <h6 className="mb-0" style={{ backgroundColor: "#FAE681" }}>
-                    Practises with challenges
-                  </h6>
-                </div>
-                <Card.Body className="p-0 m-0 card-body-footer">
-                  <Card.Text className="p-2" style={{ color: "#6B7280" }}>
-                    {recommendations?.notSuitable &&
-                      recommendations?.notSuitable?.notagroforestry?.map(
-                        (prep6, idx6) => (
-                          <p key={idx6} className="p-0 m-0">
-                            {idx6 + 1}. {prep6}
-                          </p>
-                        )
-                      )}
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            )}
-          </Col>
-        </Row>
+              <Row className="g-3">
+                {cards.map((cardObj, index) =>
+                  Object.entries(cardObj).map(([cardType, items]) => {
+                    if (
+                      cardType === "yellow_card" ||
+                      cardType === "gray_card"
+                    ) {
+                      return (
+                        <Col
+                          key={`${cardType}-${index}`}
+                          md={6}
+                          sm={12}
+                          className="mb-4"
+                        >
+                          <Card className="flex-fill h-100">
+                            <div
+                              className="rounded-top py-2 px-4"
+                              style={
+                                cardType === "yellow_card"
+                                  ? yellowCardStyle
+                                  : grayCardStyle
+                              }
+                            >
+                              <div className="d-flex align-items-center gap-2">
+                                <FontAwesomeIcon
+                                  icon={
+                                    cardType === "yellow_card"
+                                      ? faTriangleExclamation
+                                      : faThumbsDown
+                                  }
+                                />
+                                <h6 className="mb-0">
+                                  {cardType === "yellow_card"
+                                    ? "VIABLE"
+                                    : "LESS VIABLE"}
+                                </h6>
+                              </div>
+                              <p className="p-0 m-0">
+                                {cardType === "yellow_card"
+                                  ? "Tryout with Caution"
+                                  : "Practices with Challenges"}
+                              </p>
+                            </div>
+                            <Card.Body className="p-0 m-0 bg-card-body">
+                              <Card.Text className="p-2">
+                                {items.map((item, idx) => (
+                                  <p key={idx} className="p-0 m-0">
+                                    {idx + 1}.{" "}
+                                    <span style={{ color: "#6B7280" }}>
+                                      {item}
+                                    </span>
+                                  </p>
+                                ))}
+                              </Card.Text>
+                            </Card.Body>
+                          </Card>
+                        </Col>
+                      );
+                    }
+                    return null;
+                  })
+                )}
+              </Row>
+            </div>
+          </Card>
+        ))}
       </div>
 
       <Row className="mb-3">
@@ -629,13 +478,14 @@ const FarmerDetails = () => {
               color: "#279A82",
             }}
           >
-            See Farmer List
+            See List
           </Button>
         </Col>
       </Row>
     </Container>
   );
 };
+
 const userIconStyle = {
   backgroundColor: "#279A82",
   color: "white",
@@ -650,16 +500,19 @@ const userIconStyle = {
   marginRight: "15px",
 };
 
-const doCardStyle = {
+const greenCardStyle = {
   backgroundColor: "#8BC943",
-  color: "#000000",
-  padding: "10px",
+  color: "#1E1E1E",
 };
 
-const dontCardStyle = {
+const yellowCardStyle = {
   backgroundColor: "#FAE681",
-  color: "#000000",
-  padding: "10px",
+  color: "#1E1E1E",
+};
+
+const grayCardStyle = {
+  backgroundColor: "#AFAFAF",
+  color: "#1E1E1E",
 };
 
 export default FarmerDetails;
