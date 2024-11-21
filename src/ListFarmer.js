@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
 import {
   Container,
   Button,
@@ -46,30 +45,6 @@ const ListFarmer = () => {
     indexOfLastFarmer
   );
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  const checkForFarmerData = () => {
-    if (filteredFarmers.length === 0 && location && number) {
-      Swal.fire({
-        icon: "warning",
-        title: "Farmer not found",
-        text: "No farmer found for the selected location and number.",
-        showConfirmButton: false,
-        footer:
-          '<button id="addFarmerBtn" class="swal2-styled swal2-confirm" style="background-color: #3085d6; color: white;">Add Farmer</button>',
-        customClass: {
-          footer: "swal2-footer",
-        },
-      }).then(() => {});
-      setTimeout(() => {
-        const addFarmerBtn = document.getElementById("addFarmerBtn");
-        if (addFarmerBtn) {
-          addFarmerBtn.addEventListener("click", () => {
-            navigate("/AddFarmer");
-          });
-        }
-      }, 100);
-    }
-  };
 
   const handleFarmerClick = (farmer) => {
     navigate("/FarmerDetails", { state: { farmer } });

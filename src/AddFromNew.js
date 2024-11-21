@@ -76,7 +76,7 @@ const AddFrpmNew = () => {
   };
 
   const handleSubmit = (e) => {
-    console.log(formData);
+    //console.log(formData);
     e.preventDefault();
     const storedData = localStorage.getItem("farmer");
     const farmer = storedData ? JSON.parse(storedData) : [];
@@ -89,7 +89,7 @@ const AddFrpmNew = () => {
       confirmButtonText: "OK",
     }).then((result) => {
       if (result.isConfirmed) {
-        navigate("/ListFarmer");
+        navigate("/FarmerDetails", { state: { farmer: formData } });
       }
     });
   };

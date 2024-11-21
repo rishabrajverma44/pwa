@@ -14,6 +14,7 @@ const FarmerDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const farmer = location.state?.farmer || {};
+
   const [sectionOne, setSectionOne] = useState({
     Land_Preparation: [
       { green_card: ["Ripping"] },
