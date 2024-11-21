@@ -78,35 +78,6 @@ function App() {
     }
   };
 
-  self.addEventListener("sync", (event) => {
-    if (event.tag === "syncData") {
-      event.waitUntil(
-        fetch("https://your-api-endpoint.com/api/data", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json", // Adjust based on your API
-            Authorization: `Bearer your-token-here`, // Optional, if needed
-          },
-          body: JSON.stringify({
-            data: "your data here", // Data you want to send in the POST request
-          }),
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-            return response.json();
-          })
-          .then((data) => {
-            console.log("Data synced successfully:", data);
-          })
-          .catch((error) => {
-            console.error("Error syncing data:", error);
-          })
-      );
-    }
-  });
-
   return (
     <div className="App">
       <Router>
