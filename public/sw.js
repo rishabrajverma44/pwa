@@ -21,15 +21,18 @@ const CACHE_ASSETS = [
 ];
 
 self.addEventListener("install", (event) => {
+  console.log("Service Worker: Installed");
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log("Caching assets during install...");
+      console.log("Caching files...");
       return cache.addAll(CACHE_ASSETS);
     })
   );
+  self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
+  console.log("Service Worker: Activated");
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -42,113 +45,45 @@ self.addEventListener("activate", (event) => {
       );
     })
   );
+  return self.clients.claim();
 });
 
 self.addEventListener("fetch", (event) => {
+  const url = new URL(event.request.url);
+
+  if (url.protocol !== "http:" && url.protocol !== "https:") {
+    return;
+  }
+
   event.respondWith(
     (async () => {
-      const url = new URL(event.request.url);
-
-      if (url.protocol !== "http:" && url.protocol !== "https:") {
-        return fetch(event.request);
-      }
-
       try {
         const networkResponse = await fetch(event.request);
-
-        const networkResponseClone = networkResponse.clone();
-
         if (event.request.method === "GET" && networkResponse.status === 200) {
           const cache = await caches.open(CACHE_NAME);
-          cache.put(event.request, networkResponseClone);
+          cache.put(event.request, networkResponse.clone());
         }
 
         return networkResponse;
       } catch (error) {
+        console.error(
+          "Fetch failed, serving cached content if available:",
+          error
+        );
         const cachedResponse = await caches.match(event.request);
-
         if (cachedResponse) {
           return cachedResponse;
         }
 
         if (event.request.destination === "document") {
-          return caches.match("/index.html");
+          return caches.match("/offline.html");
         }
 
-        return new Response(
-          "Network request failed and no cached data available.",
-          { status: 503 }
-        );
+        return new Response("Network error and no cache available.", {
+          status: 503,
+          statusText: "Service Unavailable",
+        });
       }
     })()
   );
-});
-
-self.addEventListener("fetch", (event) => {
-  if (
-    event.request.destination === "image" ||
-    event.request.destination === "document"
-  ) {
-    event.respondWith(
-      caches.match(event.request).then((cachedResponse) => {
-        const fetchPromise = fetch(event.request)
-          .then((networkResponse) => {
-            const networkResponseClone = networkResponse.clone();
-            if (networkResponse.status === 200) {
-              caches.open(CACHE_NAME).then((cache) => {
-                cache.put(event.request, networkResponseClone);
-              });
-            }
-            return networkResponse;
-          })
-          .catch(() => cachedResponse);
-
-        return cachedResponse || fetchPromise;
-      })
-    );
-  }
-});
-
-self.addEventListener("fetch", (event) => {
-  if (event.request.url.includes("/api/")) {
-    event.respondWith(
-      caches.open(CACHE_NAME).then((cache) => {
-        return cache.match(event.request).then((cachedResponse) => {
-          const fetchPromise = fetch(event.request)
-            .then((networkResponse) => {
-              const networkResponseClone = networkResponse.clone();
-              if (networkResponse.status === 200) {
-                cache.put(event.request, networkResponseClone);
-              }
-              return networkResponse;
-            })
-            .catch(() => cachedResponse);
-
-          return cachedResponse || fetchPromise;
-        });
-      })
-    );
-  }
-});
-
-self.addEventListener("fetch", (event) => {
-  if (!navigator.onLine) {
-    if (event.request.url.endsWith("/static/js/main.chunk.js")) {
-      self.registration.showNotification("Internet Alert", {
-        body: "Internet is not working",
-      });
-    }
-    event.respondWith(
-      caches.match(event.request).then((response) => {
-        return (
-          response ||
-          fetch(event.request.clone()).catch(() => {
-            if (event.request.destination === "document") {
-              return caches.match("/index.html");
-            }
-          })
-        );
-      })
-    );
-  }
 });
