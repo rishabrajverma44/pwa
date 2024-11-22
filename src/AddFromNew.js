@@ -417,7 +417,7 @@ const AddFrpmNew = () => {
                   value={formData.agroClimaticZone}
                   onChange={handleChange}
                 >
-                  <option value="" disabled selected>
+                  <option value="" disabled>
                     Select Agro-climatic zone
                   </option>
                   <option value="Lakeshore">Lakeshore</option>
@@ -433,7 +433,7 @@ const AddFrpmNew = () => {
                   value={formData.soilTexture}
                   onChange={handleChange}
                 >
-                  <option value="" disabled selected>
+                  <option value="" disabled>
                     Select texture
                   </option>
                   <option value="Sandy">Sandy</option>
@@ -564,8 +564,10 @@ const AddFrpmNew = () => {
               variant="primary"
               onClick={currentStep < 3 ? nextStep : handleSubmit}
               disabled={
-                currentStep === 1 &&
-                (!formData.farmerName || !formData.farmerMobile)
+                (currentStep === 1 &&
+                  (!formData.farmerName || !formData.farmerMobile)) ||
+                (currentStep === 2 &&
+                  (!formData.agroClimaticZone || !formData.soilTexture))
               }
               style={{
                 background: "#279A82",
