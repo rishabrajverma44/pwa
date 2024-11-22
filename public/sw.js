@@ -1,4 +1,5 @@
-const CACHE_NAME = "app-v1";
+const CACHE_VERSION = "v2";
+const CACHE_NAME = `PWA-${CACHE_VERSION}`;
 const CACHE_ASSETS = [
   "/static/js/main.chunk.js",
   "/static/js/0.chunk.js",
@@ -44,6 +45,93 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
+  event.respondWith(
+    (async () => {
+      const url = new URL(event.request.url);
+
+      if (url.protocol !== "http:" && url.protocol !== "https:") {
+        return fetch(event.request);
+      }
+
+      try {
+        const networkResponse = await fetch(event.request);
+
+        const networkResponseClone = networkResponse.clone();
+
+        if (event.request.method === "GET" && networkResponse.status === 200) {
+          const cache = await caches.open(CACHE_NAME);
+          cache.put(event.request, networkResponseClone);
+        }
+
+        return networkResponse;
+      } catch (error) {
+        const cachedResponse = await caches.match(event.request);
+
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+
+        if (event.request.destination === "document") {
+          return caches.match("/index.html");
+        }
+
+        return new Response(
+          "Network request failed and no cached data available.",
+          { status: 503 }
+        );
+      }
+    })()
+  );
+});
+
+self.addEventListener("fetch", (event) => {
+  if (
+    event.request.destination === "image" ||
+    event.request.destination === "document"
+  ) {
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        const fetchPromise = fetch(event.request)
+          .then((networkResponse) => {
+            const networkResponseClone = networkResponse.clone();
+            if (networkResponse.status === 200) {
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(event.request, networkResponseClone);
+              });
+            }
+            return networkResponse;
+          })
+          .catch(() => cachedResponse);
+
+        return cachedResponse || fetchPromise;
+      })
+    );
+  }
+});
+
+self.addEventListener("fetch", (event) => {
+  if (event.request.url.includes("/api/")) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then((cache) => {
+        return cache.match(event.request).then((cachedResponse) => {
+          const fetchPromise = fetch(event.request)
+            .then((networkResponse) => {
+              const networkResponseClone = networkResponse.clone();
+              if (networkResponse.status === 200) {
+                cache.put(event.request, networkResponseClone);
+              }
+              return networkResponse;
+            })
+            .catch(() => cachedResponse);
+
+          return cachedResponse || fetchPromise;
+        });
+      })
+    );
+  }
+});
+
+self.addEventListener("fetch", (event) => {
   if (!navigator.onLine) {
     if (event.request.url.endsWith("/static/js/main.chunk.js")) {
       self.registration.showNotification("Internet Alert", {
@@ -61,17 +149,6 @@ self.addEventListener("fetch", (event) => {
           })
         );
       })
-    );
-  } else {
-    event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          return caches.open(CACHE_NAME).then((cache) => {
-            //cache.put(event.request, response.clone());
-            return response;
-          });
-        })
-        .catch(() => caches.match(event.request))
     );
   }
 });
