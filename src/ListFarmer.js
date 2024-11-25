@@ -134,95 +134,99 @@ const ListFarmer = () => {
         <FontAwesomeIcon icon={faChevronLeft} style={{ marginRight: "5px" }} />
         <b>List of Farmers</b>
       </div>
-      <Row>
-        <Col md={3}>
-          <Form.Group
-            controlId="number"
-            style={{ position: "relative" }}
-            className="mb-3"
-          >
-            <Form.Label>Mobile No</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Search Mobile Number"
-              value={number}
-              onChange={(e) => setNumber(e.target.value)}
-              style={{ paddingLeft: "30px" }}
-            />
-            <FaSearch
-              style={{
-                position: "absolute",
-                left: "10px",
-                top: "70%",
-                transform: "translateY(-50%)",
-                color: "#999",
-              }}
-            />
-          </Form.Group>
-        </Col>
+      {currentFarmers.length !== 0 && (
+        <div>
+          <Row>
+            <Col md={3}>
+              <Form.Group
+                controlId="number"
+                style={{ position: "relative" }}
+                className="mb-3"
+              >
+                <Form.Label>Mobile No</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Search Mobile Number"
+                  value={number}
+                  onChange={(e) => setNumber(e.target.value)}
+                  style={{ paddingLeft: "30px" }}
+                />
+                <FaSearch
+                  style={{
+                    position: "absolute",
+                    left: "10px",
+                    top: "70%",
+                    transform: "translateY(-50%)",
+                    color: "#999",
+                  }}
+                />
+              </Form.Group>
+            </Col>
 
-        <Col md={3}>
-          <Form.Group className="mb-3">
-            <Form.Label>Farmer Name</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Name of the Farmer"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </Form.Group>
-        </Col>
+            <Col md={3}>
+              <Form.Group className="mb-3">
+                <Form.Label>Farmer Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Name of the Farmer"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
 
-        <Col md={3}>
-          <Form.Group className="mb-3">
-            <Form.Label>Province</Form.Label>
-            <Form.Select onChange={handleRegionChange} value={province}>
-              <option value="" disabled>
-                Select Province
-              </option>
-              <option value="Northern region">Northern region</option>
-              <option value="Central Region">Central Region</option>
-              <option value="Southern Region">Southern Region</option>
-            </Form.Select>
-          </Form.Group>
-        </Col>
+            <Col md={3}>
+              <Form.Group className="mb-3">
+                <Form.Label>Province</Form.Label>
+                <Form.Select onChange={handleRegionChange} value={province}>
+                  <option value="" disabled>
+                    Select Province
+                  </option>
+                  <option value="Northern region">Northern region</option>
+                  <option value="Central Region">Central Region</option>
+                  <option value="Southern Region">Southern Region</option>
+                </Form.Select>
+              </Form.Group>
+            </Col>
 
-        <Col md={3}>
-          <Form.Group className="mb-3">
-            <Form.Label>District</Form.Label>
-            <Form.Select value={district} onChange={handleChangedistict}>
-              <option value="">Select District</option>
-              {districts.map((district, index) => (
-                <option key={index} value={district}>
-                  {district}
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>
-        </Col>
-      </Row>
-      <Row>
-        <Col md={3}>
-          <Form.Group className="mb-3">
-            <Form.Label>Village</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Name of the Village"
-              value={village}
-              onChange={(e) => setVillage(e.target.value)}
-            />
-          </Form.Group>
-        </Col>
-        <Col md={2}>
-          <Button
-            variant="primary"
-            onClick={handleReset}
-            style={{ marginTop: "30px" }}
-          >
-            Reset Filters
-          </Button>
-        </Col>
-      </Row>
+            <Col md={3}>
+              <Form.Group className="mb-3">
+                <Form.Label>District</Form.Label>
+                <Form.Select value={district} onChange={handleChangedistict}>
+                  <option value="">Select District</option>
+                  {districts.map((district, index) => (
+                    <option key={index} value={district}>
+                      {district}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={3}>
+              <Form.Group className="mb-3">
+                <Form.Label>Village</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Name of the Village"
+                  value={village}
+                  onChange={(e) => setVillage(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+            <Col md={2}>
+              <Button
+                variant="primary"
+                onClick={handleReset}
+                style={{ marginTop: "30px" }}
+              >
+                Reset Filters
+              </Button>
+            </Col>
+          </Row>
+        </div>
+      )}
       <hr />
       <div className="farmer-list">
         {currentFarmers.length > 0 ? (
