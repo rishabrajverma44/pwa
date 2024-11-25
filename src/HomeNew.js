@@ -23,9 +23,6 @@ const HomeNew = () => {
   const handleDocumentClick = () => {
     navigate("/Document");
   };
-  const handleVedioClick = () => {
-    navigate("/video");
-  };
 
   return (
     <div
@@ -128,22 +125,6 @@ const HomeNew = () => {
                 onClick={handleDocumentClick}
               >
                 Resources
-              </Button>
-            </div>
-            <div className="d-flex justify-content-center align-items-center mt-4">
-              <Button
-                variant="primary"
-                size="lg"
-                style={{
-                  padding: "10px 10px",
-                  borderRadius: "6px",
-                  background: "#FFFFFF",
-                  border: "1px solid #279A82",
-                  color: "#279A82",
-                }}
-                onClick={handleVedioClick}
-              >
-                Videos
               </Button>
             </div>
           </Card.Body>

@@ -8,7 +8,6 @@ import AddFromNew from "./AddFromNew.js";
 import ListFarmer from "./ListFarmer.js";
 import FarmerDetails from "./FarmerDetails.js";
 import Document from "./Document.js";
-import Vedio from "./Vedio.js";
 import { openDB } from "idb";
 import Doc1HTML from "./doc1HTML";
 import Doc2HTML from "./doc2HTML.js";
@@ -105,7 +104,6 @@ function App() {
         <Routes>
           <Route path="/ListFarmer" element={<ListFarmer />} />
           <Route path="/Document" element={<Document />} />
-          <Route path="/video" element={<Vedio />} />
           <Route path="/" element={<HomeNew />} />
           <Route path="/FarmerDetails" element={<FarmerDetails />} />
           <Route path="/about" element={<About />} />

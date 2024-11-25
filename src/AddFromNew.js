@@ -76,7 +76,6 @@ const AddFrpmNew = () => {
   };
 
   const handleSubmit = (e) => {
-    //console.log(formData);
     e.preventDefault();
     const storedData = localStorage.getItem("farmer");
     const farmer = storedData ? JSON.parse(storedData) : [];
@@ -327,10 +326,10 @@ const AddFrpmNew = () => {
 
               <Form.Check
                 type="checkbox"
-                id="Patatoes"
-                label="Patatoes"
-                value="Patatoes"
-                checked={formData.selectedItems.includes("Patatoes")}
+                id="Potatoes"
+                label="Potatoes"
+                value="Potatoes"
+                checked={formData.selectedItems.includes("Potatoes")}
                 onChange={handleCheckboxChange}
               />
 
@@ -365,10 +364,10 @@ const AddFrpmNew = () => {
 
               <Form.Check
                 type="checkbox"
-                id="Sweet Patato"
-                label="Sweet Patato"
-                value="Sweet Patato"
-                checked={formData.selectedItems.includes("Sweet Patato")}
+                id="Sweet Potato"
+                label="Sweet Potato"
+                value="Sweet Potato"
+                checked={formData.selectedItems.includes("Sweet Potato")}
                 onChange={handleCheckboxChange}
               />
 

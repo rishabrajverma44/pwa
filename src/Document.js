@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Container } from "react-bootstrap";
+import { Button, Col, Container, Row } from "react-bootstrap";
+import { openDB } from "idb";
 
 const DocumentViewer = () => {
   const navigate = useNavigate();
@@ -30,6 +31,56 @@ const DocumentViewer = () => {
     }
   }, [activeButton]);
 
+  const videoRef = useRef(null);
+
+  const [videoUrl, setVideoUrl] = useState(null);
+  const [videoUrl1, setVideoUrl1] = useState(null);
+
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        const db = await openDB("videoDatabase", 1);
+        const videoBlob = await db.get("videos", "demoVideo");
+        const videoBlob1 = await db.get("videos", "demoVideo1");
+
+        if (videoBlob && videoBlob instanceof Blob) {
+          const videoURL = URL.createObjectURL(videoBlob);
+          setVideoUrl(videoURL);
+        } else {
+          console.error("demoVideo is not a Blob or not found.");
+        }
+
+        if (videoBlob1 && videoBlob1 instanceof Blob) {
+          const videoURL1 = URL.createObjectURL(videoBlob1);
+          setVideoUrl1(videoURL1);
+        } else {
+          console.error("demoVideo1 is not a Blob or not found.");
+        }
+
+        if (!videoBlob && !videoBlob1) {
+          console.log("Videos not found in IndexedDB.");
+        }
+      } catch (error) {
+        console.error("Failed to retrieve videos from IndexedDB:", error);
+      }
+    };
+
+    fetchVideos();
+    return () => {
+      if (videoUrl) URL.revokeObjectURL(videoUrl);
+      if (videoUrl1) URL.revokeObjectURL(videoUrl1);
+    };
+  }, []);
+
+  const handleOpenVideo = (videoNumber) => {
+    setActiveButton(videoNumber);
+
+    if (videoRef.current) {
+      videoRef.current.load();
+      videoRef.current.play();
+    }
+  };
+
   return (
     <div>
       <Container className="my-4">
@@ -39,14 +90,11 @@ const DocumentViewer = () => {
         >
           <b>Document Viewer</b>
         </div>
-        <div className="d-flex flex-column align-items-center mt-4">
+        <div className="mt-4 d-flex flex-column flex-md-row justify-content-around gap-2">
           <Button
             size="lg"
             className="btnSI"
             style={{
-              width: "100%",
-              maxWidth: "400px",
-              padding: "10px 10px",
               borderRadius: "6px",
               background: activeButton === 1 ? "#279A82" : "#FFFFFF",
               border: "1px solid #279A82",
@@ -56,13 +104,11 @@ const DocumentViewer = () => {
           >
             SI Technology Participatory Decision Tool
           </Button>
+
           <Button
             size="lg"
-            className="btnSI mt-3"
+            className="btnSI"
             style={{
-              width: "100%",
-              maxWidth: "400px",
-              padding: "10px 10px",
               borderRadius: "6px",
               background: activeButton === 2 ? "#279A82" : "#FFFFFF",
               border: "1px solid #279A82",
@@ -72,9 +118,63 @@ const DocumentViewer = () => {
           >
             SI Training Strategy 2024-07
           </Button>
+
+          <Button
+            size="lg"
+            className="btnSI"
+            style={{
+              borderRadius: "6px",
+              background: activeButton === 3 ? "#279A82" : "#FFFFFF",
+              border: "1px solid #279A82",
+              color: activeButton === 3 ? "#FFFFFF" : "#279A82",
+            }}
+            onClick={() => handleOpenVideo(3)}
+          >
+            Play Video 1
+          </Button>
+
+          <Button
+            size="lg"
+            className="btnSI"
+            style={{
+              borderRadius: "6px",
+              background: activeButton === 4 ? "#279A82" : "#FFFFFF",
+              border: "1px solid #279A82",
+              color: activeButton === 4 ? "#FFFFFF" : "#279A82",
+            }}
+            onClick={() => handleOpenVideo(4)}
+          >
+            Play Video 2
+          </Button>
         </div>
 
-        {documentContent && (
+        <Row className="mt-4">
+          <Col>
+            {activeButton && (activeButton === 3 || activeButton === 4) && (
+              <video
+                ref={videoRef}
+                className="video-player"
+                width="100%"
+                height="400"
+                controls
+              >
+                <source
+                  src={
+                    activeButton === 3
+                      ? videoUrl
+                      : activeButton === 4
+                      ? videoUrl1
+                      : null
+                  }
+                  type="video/mp4"
+                />
+                Your browser does not support the video tag.
+              </video>
+            )}
+          </Col>
+        </Row>
+
+        {documentContent && (activeButton === 1 || activeButton === 2) && (
           <div
             className="document-content mt-4"
             dangerouslySetInnerHTML={{ __html: documentContent }}

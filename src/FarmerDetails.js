@@ -27,7 +27,7 @@ const FarmerDetails = () => {
       },
       { gray_card: ["Permanently raised beds"] },
     ],
-    "Choice of Doubled -up Legume Rotation (DLR) Crops": [
+    "Choice of Doubled-up Legume Rotation (DLR) Crops": [
       {
         green_card: [
           "Doubled-up legume rotation: Pigeon pea + soybean",
@@ -66,7 +66,7 @@ const FarmerDetails = () => {
       },
       { gray_card: ["Ripping", "Tied ridges", "Permanently raised beds"] },
     ],
-    "Choice of Doubled -up Legume Rotation (DLR) Crops": [
+    "Choice of Doubled-up Legume Rotation (DLR) Crops": [
       {
         green_card: ["Doubled -up legume rotation: Pigeon pea + groundnut"],
       },
@@ -107,7 +107,7 @@ const FarmerDetails = () => {
       },
       { gray_card: ["Permanently raised beds", "Tied ridges"] },
     ],
-    "Choice of Doubled -up Legume Rotation (DLR) Crops": [
+    "Choice of Doubled-up Legume Rotation (DLR) Crops": [
       {
         green_card: ["Doubled -up legume rotation: Pigeon pea + cowpea"],
       },
@@ -146,7 +146,7 @@ const FarmerDetails = () => {
         yellow_card: ["Tied ridges", "Planting basins"],
       },
     ],
-    "Choice of Doubled -up Legume Rotation (DLR) Crops": [
+    "Choice of Doubled-up Legume Rotation (DLR) Crops": [
       {
         green_card: [
           "Doubled -up legume rotation: Pigeon pea + groundnut",
@@ -189,7 +189,7 @@ const FarmerDetails = () => {
         ],
       },
     ],
-    "Choice of Doubled -up Legume Rotation (DLR) Crops": [
+    "Choice of Doubled-up Legume Rotation (DLR) Crops": [
       {
         green_card: ["Planting Density: High maize density"],
       },
@@ -235,7 +235,7 @@ const FarmerDetails = () => {
         ],
       },
     ],
-    "Choice of Doubled -up Legume Rotation (DLR) Crops": [
+    "Choice of Doubled-up Legume Rotation (DLR) Crops": [
       {
         yellow_card: [
           "Doubled -up legume rotation: Pigeon pea + groundnut",
