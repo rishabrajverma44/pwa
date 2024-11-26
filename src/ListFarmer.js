@@ -8,47 +8,48 @@ import {
   Col,
   Pagination,
   Image,
+  Dropdown,
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaSync } from "react-icons/fa";
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
+import Swal from "sweetalert2";
+import axios from "axios";
 
 const ListFarmer = () => {
   const navigate = useNavigate();
-  const [number, setNumber] = useState("");
+  const [loading, setLoading] = useState(null);
+  const [search, setSearch] = useState("");
   const [province, setProvince] = useState("");
   const [district, setDistrict] = useState("");
   const [village, setVillage] = useState("");
-  const [name, setName] = useState("");
   const [filteredFarmers, setFilteredFarmers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [farmersPerPage] = useState(5);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const getFarmersFromStorage = () => {
     const storedFarmers = localStorage.getItem("farmer");
     return storedFarmers ? JSON.parse(storedFarmers) : [];
   };
-
   useEffect(() => {
     const allFarmers = getFarmersFromStorage();
     const filtered = allFarmers.filter((farmer) => {
-      const matchesNumber = !number || farmer.farmerMobile.includes(number);
-      const matchesName = !name || farmer.farmerName.includes(name);
+      const matchesSearch =
+        !search ||
+        farmer.farmerMobile.includes(search) ||
+        farmer.farmerName.includes(search);
       const matchesProvince = !province || farmer.stateName === province;
       const matchesDistrict = !district || farmer.districName === district;
       const matchesVillage = !village || farmer.villageName.includes(village);
       return (
-        matchesNumber &&
-        matchesProvince &&
-        matchesDistrict &&
-        matchesVillage &&
-        matchesName
+        matchesSearch && matchesProvince && matchesDistrict && matchesVillage
       );
     });
     setFilteredFarmers(filtered);
     setCurrentPage(1);
-  }, [number, province, district, village, name]);
+  }, [province, district, village, search]);
 
   const indexOfLastFarmer = currentPage * farmersPerPage;
   const indexOfFirstFarmer = indexOfLastFarmer - farmersPerPage;
@@ -118,115 +119,275 @@ const ListFarmer = () => {
   };
 
   const handleReset = () => {
-    setNumber("");
+    setSearch("");
     setProvince("");
     setDistricts([]);
     setVillage("");
   };
 
+  const checkInternetConnection = async () => {
+    try {
+      const response = await fetch("https://www.google.com/favicon.ico", {
+        method: "HEAD",
+        cache: "no-cache",
+      });
+      return response.ok;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  const syncDataOneByOne = async () => {
+    const actualStatus = await checkInternetConnection();
+    const allFarmers = getFarmersFromStorage();
+    const unsyncedFarmers = allFarmers.filter((farmer) => farmer.synced === 0);
+    console.log(unsyncedFarmers);
+
+    // if (actualStatus) {
+    //   for (let i = 0; i < unsyncedFarmers.length; i++) {
+    //     const farmer = unsyncedFarmers[i];
+    //     try {
+    //       await new Promise((resolve) => setTimeout(resolve, 2000));
+    //       const response = await axios.post(
+    //         "http://traningl.indevconsultancy.in/pwa-blog-api/farmer_insert.php",
+    //         farmer
+    //       );
+    //       console.log(response);
+    //       console.log(`Syncing farmer: ${farmer.farmerName}`);
+    //       farmer.synced = 1;
+    //       console.log(`Farmer ${farmer.farmerName} synced successfully.`);
+    //     } catch (error) {
+    //       console.error(`Failed to sync farmer ${farmer.farmerName}`, error);
+    //     }
+    //   }
+    //   saveFarmersToStorage(allFarmers);
+    //   setLoading(false);
+    // } else {
+    //   alert("No internet connection");
+    // }
+
+    // Swal.fire({
+    //   title: "Success!",
+    //   text: "Your data has been saved successfully.",
+    //   icon: "success",
+    //   confirmButtonText: "OK",
+    // }).then((result) => {
+    //   if (result.isConfirmed) {
+    //     console.log("good");
+    //   }
+    // });
+  };
+
+  const sync = () => {
+    syncDataOneByOne();
+  };
+
+  const toggleDropdown = () => setShowDropdown(!showDropdown);
+
   return (
     <Container className="my-4">
-      <div
-        style={{ cursor: "pointer" }}
-        className="my-4"
-        onClick={() => navigate("/")}
-      >
-        <FontAwesomeIcon icon={faChevronLeft} style={{ marginRight: "5px" }} />
-        <b>List of Farmers</b>
-      </div>
-      {currentFarmers.length !== 0 && (
-        <div>
-          <Row>
-            <Col md={3}>
-              <Form.Group
-                controlId="number"
-                style={{ position: "relative" }}
-                className="mb-3"
-              >
-                <Form.Label>Mobile No</Form.Label>
-                <Form.Control
-                  type="number"
-                  placeholder="Search Mobile Number"
-                  value={number}
-                  onChange={(e) => setNumber(e.target.value)}
-                  style={{ paddingLeft: "30px" }}
-                />
-                <FaSearch
-                  style={{
-                    position: "absolute",
-                    left: "10px",
-                    top: "70%",
-                    transform: "translateY(-50%)",
-                    color: "#999",
-                  }}
-                />
-              </Form.Group>
-            </Col>
+      <Row>
+        <Col
+          style={{ cursor: "pointer" }}
+          className="my-4"
+          onClick={() => navigate("/")}
+        >
+          <FontAwesomeIcon
+            icon={faChevronLeft}
+            style={{ marginRight: "5px" }}
+          />
+          <b>List of Farmers</b>
+        </Col>
+        {/* <Col className="my-4">
+          <Button
+            onClick={sync}
+            style={{
+              borderRadius: "6px",
+              background: "#279A82",
+              border: "1px solid #279A82",
+              background: "#279A82",
+              color: "#FFFFFF",
+              fontWeight: 500,
+            }}
+          >
+            Sync
+          </Button>
+        </Col> */}
+      </Row>
+      <Row>
+        <Col md={6}>
+          <Form.Group
+            controlId="number"
+            style={{ position: "relative" }}
+            className="mb-3"
+          >
+            <Form.Label>Search</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Search Mobile Number/ Farmer name"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{ paddingLeft: "30px" }}
+            />
+            <FaSearch
+              style={{
+                position: "absolute",
+                left: "10px",
+                top: "75%",
+                transform: "translateY(-50%)",
+                color: "#999",
+              }}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+      <Row>
+        <Col md={3}>
+          <Form.Group className="mb-3">
+            <Form.Label>Province</Form.Label>
+            <Form.Select onChange={handleRegionChange} value={province}>
+              <option value="" disabled>
+                Select Province
+              </option>
+              <option value="Northern region">Northern region</option>
+              <option value="Central Region">Central Region</option>
+              <option value="Southern Region">Southern Region</option>
+            </Form.Select>
+          </Form.Group>
+        </Col>
 
-            <Col md={3}>
-              <Form.Group className="mb-3">
-                <Form.Label>Farmer Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Name of the Farmer"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
+        <Col md={3}>
+          <Form.Group className="mb-3">
+            <Form.Label>District</Form.Label>
+            <Form.Select value={district} onChange={handleChangedistict}>
+              <option value="">Select District</option>
+              {districts.map((district, index) => (
+                <option key={index} value={district}>
+                  {district}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+        </Col>
+      </Row>
+      <Row>
+        <Col md={3}>
+          <Form.Group className="mb-3">
+            <Form.Label>Village</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Name of the Village"
+              value={village}
+              onChange={(e) => setVillage(e.target.value)}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={2}>
+          <Button
+            variant="primary"
+            onClick={handleReset}
+            style={{
+              borderRadius: "6px",
+              background: "#279A82",
+              border: "1px solid #279A82",
+              background: "#FFFFFF",
+              color: "#279A82",
+              fontWeight: 500,
+            }}
+          >
+            Reset Filters
+          </Button>
+        </Col>
+      </Row>
 
-            <Col md={3}>
-              <Form.Group className="mb-3">
-                <Form.Label>Province</Form.Label>
-                <Form.Select onChange={handleRegionChange} value={province}>
-                  <option value="" disabled>
-                    Select Province
-                  </option>
-                  <option value="Northern region">Northern region</option>
-                  <option value="Central Region">Central Region</option>
-                  <option value="Southern Region">Southern Region</option>
-                </Form.Select>
-              </Form.Group>
-            </Col>
+      {/* <Row>
+        <Col md={2}>
+          <Button
+            variant="primary"
+            onClick={handleReset}
+            style={{
+              borderRadius: "6px",
+              background: "#279A82",
+              border: "1px solid #279A82",
+              color: "#FFFFFF",
+              fontWeight: 500,
+            }}
+          >
+            Reset Filters
+          </Button>
+        </Col>
+        <Col md={2}>
+          <Dropdown.Toggle
+            variant="success"
+            id="dropdown-basic"
+            onClick={toggleDropdown}
+            style={{
+              borderRadius: "6px",
+              background: "#279A82",
+              border: "1px solid #279A82",
+              color: "#FFFFFF",
+              fontWeight: 500,
+            }}
+          >
+            Open/Close
+          </Dropdown.Toggle>
+        </Col>
+      </Row>
+      <Row>
+        <Dropdown show={showDropdown} onToggle={() => {}}>
+          <Dropdown.Menu>
+            <div style={{ padding: "10px" }}>
+              <Row>
+                <Col md={3}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Province</Form.Label>
+                    <Form.Select onChange={handleRegionChange} value={province}>
+                      <option value="" disabled>
+                        Select Province
+                      </option>
+                      <option value="Northern region">Northern region</option>
+                      <option value="Central Region">Central Region</option>
+                      <option value="Southern Region">Southern Region</option>
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col md={3}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>District</Form.Label>
+                    <Form.Select
+                      value={district}
+                      onChange={handleChangedistict}
+                    >
+                      <option value="">Select District</option>
+                      {districts.map((district, index) => (
+                        <option key={index} value={district}>
+                          {district}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col md={3}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Village</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Name of the Village"
+                      value={village}
+                      onChange={(e) => setVillage(e.target.value)}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+            </div>
+          </Dropdown.Menu>
+        </Dropdown>
+      </Row> */}
 
-            <Col md={3}>
-              <Form.Group className="mb-3">
-                <Form.Label>District</Form.Label>
-                <Form.Select value={district} onChange={handleChangedistict}>
-                  <option value="">Select District</option>
-                  {districts.map((district, index) => (
-                    <option key={index} value={district}>
-                      {district}
-                    </option>
-                  ))}
-                </Form.Select>
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={3}>
-              <Form.Group className="mb-3">
-                <Form.Label>Village</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Name of the Village"
-                  value={village}
-                  onChange={(e) => setVillage(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col md={2}>
-              <Button
-                variant="primary"
-                onClick={handleReset}
-                style={{ marginTop: "30px" }}
-              >
-                Reset Filters
-              </Button>
-            </Col>
-          </Row>
-        </div>
-      )}
       <hr />
       <div className="farmer-list">
         {currentFarmers.length > 0 ? (
@@ -237,36 +398,6 @@ const ListFarmer = () => {
                 onClick={() => handleFarmerClick(farmer)}
                 style={{ cursor: "pointer" }}
               >
-                {farmer.image ? (
-                  <Image
-                    src={farmer.image}
-                    roundedCircle
-                    style={{
-                      width: "80px",
-                      height: "80px",
-                      marginRight: "15px",
-                    }}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      width: "80px",
-                      height: "80px",
-                      borderRadius: "50%",
-                      backgroundColor: "#ccc",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "24px",
-                      color: "#fff",
-                      marginRight: "15px",
-                    }}
-                  >
-                    {farmer.farmerName
-                      ? farmer.farmerName.charAt(0).toUpperCase()
-                      : ""}
-                  </div>
-                )}
                 <div>
                   <h6 style={{ marginBottom: "5px" }}>{farmer.farmerName}</h6>
                   <p style={{ marginBottom: "3px" }}>{farmer.farmerMobile}</p>

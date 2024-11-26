@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Container, Button, Form } from "react-bootstrap";
-import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import "./index.css";
 
@@ -19,15 +18,12 @@ const AddFrpmNew = () => {
     otherItem: "",
     agroClimaticZone: "",
     soilTexture: "",
-    synced: "0",
-    geolocation: "",
+    synced: 0,
     stateName: "",
     districName: "",
     villageName: "",
-    technicalName: "",
     orgnizationName: "",
-    longitude1: "",
-    latitude1: "",
+    isExtensionOfficer: "No",
     officerName: "",
     officerOrganization: "",
   });
@@ -50,6 +46,7 @@ const AddFrpmNew = () => {
 
   const handleRadioChange = (e) => {
     setIsExtensionOfficer(e.target.value === "yes");
+    formData.isExtensionOfficer = e.target.value;
   };
   const handleGenderChange = (e) => {
     const { name, value } = e.target;
@@ -81,55 +78,7 @@ const AddFrpmNew = () => {
     const farmer = storedData ? JSON.parse(storedData) : [];
     farmer.push(formData);
     localStorage.setItem("farmer", JSON.stringify(farmer));
-    Swal.fire({
-      title: "Success!",
-      text: "Your data has been saved successfully.",
-      icon: "success",
-      confirmButtonText: "OK",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        navigate("/FarmerDetails", { state: { farmer: formData } });
-      }
-    });
-  };
-
-  useEffect(() => {
-    fetchGeolocation();
-  }, []);
-
-  const fetchGeolocation = () => {
-    if (navigator.geolocation) {
-      navigator.permissions
-        .query({ name: "geolocation" })
-        .then((permissionStatus) => {
-          if (permissionStatus.state === "granted") {
-            getGeolocation();
-          } else if (permissionStatus.state === "prompt") {
-            getGeolocation();
-          } else if (permissionStatus.state === "denied") {
-            setShowModal(true);
-          }
-        });
-    } else {
-      alert("Geolocation is not supported by this browser.");
-    }
-  };
-
-  const getGeolocation = () => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setFormData((prevData) => ({
-          ...prevData,
-          geolocation: `Latitude: ${latitude}, Longitude: ${longitude}`,
-          latitude1: latitude.toString(),
-          longitude1: longitude.toString(),
-        }));
-      },
-      (error) => {
-        console.error("Geolocation error:", error);
-      }
-    );
+    navigate("/FarmerDetails", { state: { farmer: formData } });
   };
 
   const nextStep = () => {
@@ -185,7 +134,6 @@ const AddFrpmNew = () => {
     setFormData((prevData) => ({
       ...prevData,
       stateName: region,
-      districtName: "",
     }));
 
     if (region === "Northern region") {
@@ -295,7 +243,7 @@ const AddFrpmNew = () => {
                 />
               </div>
 
-              <Form.Group className="mt-3">
+              <Form.Group className="mb-3">
                 <Form.Label>Age</Form.Label>
                 <Form.Select
                   required
@@ -304,11 +252,12 @@ const AddFrpmNew = () => {
                   onChange={handleAgeChange}
                 >
                   <option>Select Age</option>
-                  <option value="0-14">0-14</option>
                   <option value="15-24">15-24</option>
-                  <option value="25-54">25-54</option>
-                  <option value="54-64">54-64</option>
-                  <option value=">65+">65+</option>
+                  <option value="25-34">25-34</option>
+                  <option value="35-44">35-44</option>
+                  <option value="45-54">45-54</option>
+                  <option value="55-64">55-64</option>
+                  <option value="65+">65+</option>
                 </Form.Select>
               </Form.Group>
 
@@ -326,48 +275,20 @@ const AddFrpmNew = () => {
 
               <Form.Check
                 type="checkbox"
-                id="Potatoes"
-                label="Potatoes"
-                value="Potatoes"
-                checked={formData.selectedItems.includes("Potatoes")}
+                id="Pearl_Millet"
+                label="Pearl Millet"
+                value="Pearl_Millet"
+                checked={formData.selectedItems.includes("Pearl_Millet")}
                 onChange={handleCheckboxChange}
               />
 
               <Form.Check
                 type="checkbox"
-                id="Cassava"
-                label="Cassava"
-                value="Cassava"
+                id="Pigeonpea"
+                label="Pigeonpea"
+                value="Pigeonpea"
                 className="my-2"
-                checked={formData.selectedItems.includes("Cassava")}
-                onChange={handleCheckboxChange}
-              />
-
-              <Form.Check
-                type="checkbox"
-                id="Tabacco"
-                label="Tabacco"
-                value="Tabacco"
-                checked={formData.selectedItems.includes("Tabacco")}
-                onChange={handleCheckboxChange}
-              />
-
-              <Form.Check
-                type="checkbox"
-                id="Tea"
-                label="Tea"
-                value="Tea"
-                className="my-2"
-                checked={formData.selectedItems.includes("Tea")}
-                onChange={handleCheckboxChange}
-              />
-
-              <Form.Check
-                type="checkbox"
-                id="Sweet Potato"
-                label="Sweet Potato"
-                value="Sweet Potato"
-                checked={formData.selectedItems.includes("Sweet Potato")}
+                checked={formData.selectedItems.includes("Pigeonpea")}
                 onChange={handleCheckboxChange}
               />
 
@@ -376,7 +297,6 @@ const AddFrpmNew = () => {
                 id="Groundnut"
                 label="Groundnut"
                 value="Groundnut"
-                className="my-2"
                 checked={formData.selectedItems.includes("Groundnut")}
                 onChange={handleCheckboxChange}
               />
@@ -459,7 +379,6 @@ const AddFrpmNew = () => {
                 <Form.Label>District</Form.Label>
                 <Form.Select
                   required
-                  name="districtName"
                   value={formData.districName}
                   onChange={handleChangedistict}
                 >

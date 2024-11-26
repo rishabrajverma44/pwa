@@ -61,39 +61,36 @@ const HomeNew = () => {
             </Card.Text>
 
             <div className="d-flex justify-content-between mt-4">
-              <Button
-                variant="primary"
+              <button
                 size="lg"
                 style={{
-                  padding: "10px 10px",
+                  width: "156px",
                   borderRadius: "6px",
                   background: "#279A82",
                   border: "1px solid #279A82",
+                  color: "#FFFFFF",
+                  fontWeight: 500,
                 }}
                 onClick={handleAddFarmerClick}
               >
                 Add Farmer
-              </Button>
-              <Button
-                variant="primary"
+              </button>
+              <button
                 size="lg"
-                // style={{
-                //   padding: "10px 10px",
-                //   borderRadius: "6px",
-                //   background: "#FFFFFF",
-                //   border: "1px solid #279A82",
-                //   color: "#279A82",
-                // }}
                 style={{
-                  padding: "10px 10px",
+                  width: "156px",
+                  height: "50px",
                   borderRadius: "6px",
                   background: "#279A82",
                   border: "1px solid #279A82",
+                  background: "#FFFFFF",
+                  color: "#279A82",
+                  fontWeight: 500,
                 }}
                 onClick={handleListFarmerClick}
               >
                 List of Farmers
-              </Button>
+              </button>
             </div>
             <div>
               <p
@@ -109,9 +106,8 @@ const HomeNew = () => {
                 Learn more about sustainable intensification technologies
               </p>
             </div>
-            <div className="d-flex justify-content-center align-items-center mt-4">
-              <Button
-                variant="primary"
+            <div className="d-flex justify-content-center align-items-center">
+              <button
                 size="lg"
                 style={{
                   padding: "10px 10px",
@@ -120,12 +116,13 @@ const HomeNew = () => {
                   border: "1px solid #279A82",
                   color: "#279A82",
                   width: "100%",
-                  maxWidth: "200px",
+                  maxWidth: "400px",
+                  fontWeight: 500,
                 }}
                 onClick={handleDocumentClick}
               >
                 Resources
-              </Button>
+              </button>
             </div>
           </Card.Body>
         </Card>
