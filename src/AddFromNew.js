@@ -20,19 +20,18 @@ const AddFrpmNew = () => {
     soilTexture: "",
     synced: 0,
     stateName: "",
-    districName: "",
+    districtName: "",
     villageName: "",
-    orgnizationName: "",
     isExtensionOfficer: "No",
     officerName: "",
-    officerOrganization: "",
+    organizationName: "",
   });
 
   const handleChangedistict = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      districName: value,
+      districtName: value,
     }));
   };
 
@@ -367,7 +366,7 @@ const AddFrpmNew = () => {
                   value={formData.stateName}
                   onChange={handleRegionChange}
                 >
-                  <option value="" disabled selected>
+                  <option value="" disabled>
                     Select Province
                   </option>
                   <option value="Northern region">Northern region</option>
@@ -379,7 +378,8 @@ const AddFrpmNew = () => {
                 <Form.Label>District</Form.Label>
                 <Form.Select
                   required
-                  value={formData.districName}
+                  name="districtName"
+                  value={formData.districtName}
                   onChange={handleChangedistict}
                 >
                   <option value="">Select District</option>
@@ -443,15 +443,12 @@ const AddFrpmNew = () => {
                         placeholder="Enter Officer Name"
                       />
                     </Form.Group>
-                    <Form.Group
-                      controlId="officerOrganization"
-                      className="mt-3"
-                    >
+                    <Form.Group controlId="organizationName" className="mt-3">
                       <Form.Label>Organization</Form.Label>
                       <Form.Control
                         type="text"
-                        name="officerOrganization"
-                        value={formData.officerOrganization}
+                        name="organizationName"
+                        value={formData.organizationName}
                         onChange={handleInputChange}
                         placeholder="Enter Organization Name"
                       />
@@ -485,7 +482,11 @@ const AddFrpmNew = () => {
                 (currentStep === 1 &&
                   (!formData.farmerName || !formData.farmerMobile)) ||
                 (currentStep === 2 &&
-                  (!formData.agroClimaticZone || !formData.soilTexture))
+                  (!formData.agroClimaticZone ||
+                    !formData.soilTexture ||
+                    !formData.stateName ||
+                    !formData.districtName ||
+                    !formData.villageName))
               }
               style={{
                 background: "#279A82",

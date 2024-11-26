@@ -50,17 +50,17 @@ const HomeNew = () => {
                 fontSize: "28px",
                 fontWeight: 800,
                 lineHeight: "33.89px",
-                textAlign: "left",
                 color: "#003B49",
+                textAlign: "left",
               }}
             >
               <strong>
                 Discover sustainable intensification technologies tailored to
-                enhance soil health right in your location
+                enhance soil health right in your location.
               </strong>
             </Card.Text>
 
-            <div className="d-flex justify-content-between mt-4">
+            <div className="d-flex justify-content-between mt-3">
               <button
                 size="lg"
                 style={{
@@ -94,13 +94,14 @@ const HomeNew = () => {
             </div>
             <div>
               <p
-                className="mt-3 text-center"
+                className="mt-4"
                 style={{
                   fontFamily: "Inter",
-                  fontSize: "18px",
-                  fontWeight: 500,
-                  textAlign: "left",
+                  fontSize: "24px",
+                  fontWeight: 400,
                   color: "#003B49",
+                  textAlign: "left",
+                  lineHeight: "29.05px",
                 }}
               >
                 Learn more about sustainable intensification technologies

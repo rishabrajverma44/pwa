@@ -127,55 +127,90 @@ const ListFarmer = () => {
 
   const checkInternetConnection = async () => {
     try {
-      const response = await fetch("https://www.google.com/favicon.ico", {
-        method: "HEAD",
-        cache: "no-cache",
-      });
+      const response = await fetch(
+        "https://api.allorigins.win/get?url=https://www.google.com/favicon.ico",
+        {
+          method: "HEAD",
+          cache: "no-cache",
+        }
+      );
       return response.ok;
     } catch (error) {
       return false;
     }
   };
 
+  const saveFarmersToStorage = (farmers) => {
+    localStorage.setItem("farmer", JSON.stringify(farmers));
+  };
+  const [tittle, setTittle] = useState("");
   const syncDataOneByOne = async () => {
     const actualStatus = await checkInternetConnection();
     const allFarmers = getFarmersFromStorage();
     const unsyncedFarmers = allFarmers.filter((farmer) => farmer.synced === 0);
-    console.log(unsyncedFarmers);
 
-    // if (actualStatus) {
-    //   for (let i = 0; i < unsyncedFarmers.length; i++) {
-    //     const farmer = unsyncedFarmers[i];
-    //     try {
-    //       await new Promise((resolve) => setTimeout(resolve, 2000));
-    //       const response = await axios.post(
-    //         "http://traningl.indevconsultancy.in/pwa-blog-api/farmer_insert.php",
-    //         farmer
-    //       );
-    //       console.log(response);
-    //       console.log(`Syncing farmer: ${farmer.farmerName}`);
-    //       farmer.synced = 1;
-    //       console.log(`Farmer ${farmer.farmerName} synced successfully.`);
-    //     } catch (error) {
-    //       console.error(`Failed to sync farmer ${farmer.farmerName}`, error);
-    //     }
-    //   }
-    //   saveFarmersToStorage(allFarmers);
-    //   setLoading(false);
-    // } else {
-    //   alert("No internet connection");
-    // }
+    if (!actualStatus) {
+      Swal.fire({
+        html: `<b>Check Internet connection !</b>`,
+        allowOutsideClick: false,
+      });
+    } else if (unsyncedFarmers.length === 0) {
+      Swal.fire({
+        text: "All data are synced",
+      });
+    } else if (actualStatus && unsyncedFarmers.length !== 0) {
+      let shouldCancel = false;
+      Swal.fire({
+        html: `<b>Syncing in progress...</b>${tittle} <br> You can cancel anytime.`,
+        allowOutsideClick: false,
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        preConfirm: () => {
+          shouldCancel = true;
+        },
+      });
 
-    // Swal.fire({
-    //   title: "Success!",
-    //   text: "Your data has been saved successfully.",
-    //   icon: "success",
-    //   confirmButtonText: "OK",
-    // }).then((result) => {
-    //   if (result.isConfirmed) {
-    //     console.log("good");
-    //   }
-    // });
+      for (let i = 0; i < unsyncedFarmers.length; i++) {
+        if (shouldCancel) {
+          Swal.close();
+          alert("Syncing process canceled by the user.");
+          break;
+        }
+
+        const farmer = unsyncedFarmers[i];
+        const { synced, ...farmerData } = farmer;
+        try {
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          const response = await axios.post(
+            "http://traningl.indevconsultancy.in/pwa-blog-api/farmer_insert.php",
+            farmerData
+          );
+          console.log(response);
+          console.log(`Syncing farmer: ${farmer.farmerName}`);
+          farmer.synced = 1;
+          setTittle(
+            `${i + 1} synced successfully out of ${unsyncedFarmers.length}`
+          );
+        } catch (error) {
+          console.error(`Failed to sync farmer ${farmer.farmerName}`, error);
+          Swal.fire({
+            html: `<b>Something went wrong...</b>`,
+            allowOutsideClick: false,
+          });
+        }
+      }
+      Swal.close();
+      saveFarmersToStorage(allFarmers);
+      setLoading(false);
+    } else {
+      Swal.fire({
+        html: `<b>Somthing went wrong !</b>`,
+        allowOutsideClick: false,
+      });
+    }
   };
 
   const sync = () => {
@@ -198,21 +233,21 @@ const ListFarmer = () => {
           />
           <b>List of Farmers</b>
         </Col>
-        {/* <Col className="my-4">
+        <Col className="my-4">
           <Button
             onClick={sync}
             style={{
               borderRadius: "6px",
               background: "#279A82",
               border: "1px solid #279A82",
-              background: "#279A82",
+              background: "#FFFFFF",
               color: "#FFFFFF",
               fontWeight: 500,
             }}
           >
-            Sync
+            <FaSync color="#279A82" />
           </Button>
-        </Col> */}
+        </Col>
       </Row>
       <Row>
         <Col md={6}>
@@ -241,7 +276,7 @@ const ListFarmer = () => {
           </Form.Group>
         </Col>
       </Row>
-      <Row>
+      {/* <Row>
         <Col md={3}>
           <Form.Group className="mb-3">
             <Form.Label>Province</Form.Label>
@@ -269,8 +304,8 @@ const ListFarmer = () => {
             </Form.Select>
           </Form.Group>
         </Col>
-      </Row>
-      <Row>
+      </Row> */}
+      {/* <Row>
         <Col md={3}>
           <Form.Group className="mb-3">
             <Form.Label>Village</Form.Label>
@@ -298,7 +333,7 @@ const ListFarmer = () => {
             Reset Filters
           </Button>
         </Col>
-      </Row>
+      </Row> */}
 
       {/* <Row>
         <Col md={2}>

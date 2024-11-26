@@ -312,24 +312,12 @@ const FarmerDetails = () => {
       </div>
       <Card className="p-3 d-flex flex-row align-items-center justify-content-between">
         <div className="d-flex flex-row align-items-center">
-          <div className="user-icon" style={userIconStyle}>
-            {farmer.farmerName ? farmer.farmerName[0] : "F"}
-          </div>
           <div>
             <h5>{farmer.farmerName || "Farmer Name"}</h5>
             <p className="mb-0" style={{ color: "#6B7280" }}>
               {farmer.farmerMobile || "Farmer Mobile"}
             </p>
           </div>
-        </div>
-        <div className="d-flex align-items-center">
-          <span style={{ color: "#6B7280" }}>
-            {farmer.villageName || "Village Name"}
-          </span>
-          <FontAwesomeIcon
-            icon={faLocationDot}
-            style={{ color: "#279A82", marginLeft: "5px" }}
-          />
         </div>
       </Card>
 
@@ -485,20 +473,6 @@ const FarmerDetails = () => {
       </Row>
     </Container>
   );
-};
-
-const userIconStyle = {
-  backgroundColor: "#279A82",
-  color: "white",
-  fontSize: "24px",
-  fontWeight: "bold",
-  borderRadius: "50%",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  width: "80px",
-  height: "80px",
-  marginRight: "15px",
 };
 
 const greenCardStyle = {
