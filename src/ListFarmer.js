@@ -314,8 +314,8 @@ const ListFarmer = () => {
 
       <Row>
         <Dropdown show={showDropdown} className="mt-2">
-          <Dropdown.Menu>
-            <div style={{ width: "300px" }}>
+          <Dropdown.Menu style={{ width: "95%" }}>
+            <div>
               <Row className="px-2">
                 <Form.Group className="mb-3">
                   <Form.Label>Province</Form.Label>
