@@ -9,6 +9,7 @@ import {
   Pagination,
   Image,
   Dropdown,
+  Card,
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
@@ -33,8 +34,8 @@ const ListFarmer = () => {
     const storedFarmers = localStorage.getItem("farmer");
     return storedFarmers ? JSON.parse(storedFarmers) : [];
   };
+  let allFarmers = getFarmersFromStorage();
   useEffect(() => {
-    const allFarmers = getFarmersFromStorage();
     const filtered = allFarmers.filter((farmer) => {
       const matchesSearch =
         !search ||
@@ -119,10 +120,12 @@ const ListFarmer = () => {
   };
 
   const handleReset = () => {
+    setCurrentPage(1);
     setSearch("");
     setProvince("");
     setDistricts([]);
     setVillage("");
+    setFilteredFarmers(allFarmers);
   };
 
   const checkInternetConnection = async () => {
@@ -202,6 +205,7 @@ const ListFarmer = () => {
           });
         }
       }
+
       Swal.close();
       saveFarmersToStorage(allFarmers);
       setLoading(false);
@@ -217,8 +221,6 @@ const ListFarmer = () => {
     syncDataOneByOne();
   };
 
-  const toggleDropdown = () => setShowDropdown(!showDropdown);
-
   return (
     <Container className="my-4">
       <Row>
@@ -233,7 +235,7 @@ const ListFarmer = () => {
           />
           <b>List of Farmers</b>
         </Col>
-        <Col className="my-4">
+        {/* <Col className="my-4">
           <Button
             onClick={sync}
             style={{
@@ -247,7 +249,7 @@ const ListFarmer = () => {
           >
             <FaSync color="#279A82" />
           </Button>
-        </Col>
+        </Col> */}
       </Row>
       <Row>
         <Col md={6}>
@@ -268,7 +270,7 @@ const ListFarmer = () => {
               style={{
                 position: "absolute",
                 left: "10px",
-                top: "75%",
+                top: "72%",
                 transform: "translateY(-50%)",
                 color: "#999",
               }}
@@ -276,165 +278,101 @@ const ListFarmer = () => {
           </Form.Group>
         </Col>
       </Row>
-      {/* <Row>
-        <Col md={3}>
-          <Form.Group className="mb-3">
-            <Form.Label>Province</Form.Label>
-            <Form.Select onChange={handleRegionChange} value={province}>
-              <option value="" disabled>
-                Select Province
-              </option>
-              <option value="Northern region">Northern region</option>
-              <option value="Central Region">Central Region</option>
-              <option value="Southern Region">Southern Region</option>
-            </Form.Select>
-          </Form.Group>
-        </Col>
 
-        <Col md={3}>
-          <Form.Group className="mb-3">
-            <Form.Label>District</Form.Label>
-            <Form.Select value={district} onChange={handleChangedistict}>
-              <option value="">Select District</option>
-              {districts.map((district, index) => (
-                <option key={index} value={district}>
-                  {district}
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>
-        </Col>
-      </Row> */}
-      {/* <Row>
-        <Col md={3}>
-          <Form.Group className="mb-3">
-            <Form.Label>Village</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Name of the Village"
-              value={village}
-              onChange={(e) => setVillage(e.target.value)}
-            />
-          </Form.Group>
-        </Col>
-        <Col md={2}>
-          <Button
-            variant="primary"
-            onClick={handleReset}
-            style={{
-              borderRadius: "6px",
-              background: "#279A82",
-              border: "1px solid #279A82",
-              background: "#FFFFFF",
-              color: "#279A82",
-              fontWeight: 500,
-            }}
-          >
-            Reset Filters
-          </Button>
-        </Col>
-      </Row> */}
+      <Row className="d-flex justify-content-around">
+        <Button
+          variant="success"
+          id="dropdown-basic"
+          onClick={() => setShowDropdown(!showDropdown)}
+          style={{
+            width: "140px",
+            borderRadius: "6px",
+            background: "#279A82",
+            border: "1px solid #279A82",
+            color: "#FFFFFF",
+            fontWeight: 500,
+          }}
+        >
+          {showDropdown ? "Hide" : "Show"}
+        </Button>
 
-      {/* <Row>
-        <Col md={2}>
-          <Button
-            variant="primary"
-            onClick={handleReset}
-            style={{
-              borderRadius: "6px",
-              background: "#279A82",
-              border: "1px solid #279A82",
-              color: "#FFFFFF",
-              fontWeight: 500,
-            }}
-          >
-            Reset Filters
-          </Button>
-        </Col>
-        <Col md={2}>
-          <Dropdown.Toggle
-            variant="success"
-            id="dropdown-basic"
-            onClick={toggleDropdown}
-            style={{
-              borderRadius: "6px",
-              background: "#279A82",
-              border: "1px solid #279A82",
-              color: "#FFFFFF",
-              fontWeight: 500,
-            }}
-          >
-            Open/Close
-          </Dropdown.Toggle>
-        </Col>
+        <Button
+          variant="primary"
+          onClick={handleReset}
+          style={{
+            borderRadius: "6px",
+            width: "140px",
+            background: "#279A82",
+            border: "1px solid #279A82",
+            color: "#FFFFFF",
+            fontWeight: 500,
+          }}
+        >
+          Reset
+        </Button>
       </Row>
+
       <Row>
-        <Dropdown show={showDropdown} onToggle={() => {}}>
+        <Dropdown show={showDropdown} className="mt-2">
           <Dropdown.Menu>
-            <div style={{ padding: "10px" }}>
-              <Row>
-                <Col md={3}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Province</Form.Label>
-                    <Form.Select onChange={handleRegionChange} value={province}>
-                      <option value="" disabled>
-                        Select Province
+            <div style={{ width: "300px" }}>
+              <Row className="px-2">
+                <Form.Group className="mb-3">
+                  <Form.Label>Province</Form.Label>
+                  <Form.Select onChange={handleRegionChange} value={province}>
+                    <option value="" disabled>
+                      Select Province
+                    </option>
+                    <option value="Northern region">Northern region</option>
+                    <option value="Central Region">Central Region</option>
+                    <option value="Southern Region">Southern Region</option>
+                  </Form.Select>
+                </Form.Group>
+              </Row>
+              <Row className="px-2">
+                <Form.Group className="mb-3">
+                  <Form.Label>District</Form.Label>
+                  <Form.Select value={district} onChange={handleChangedistict}>
+                    <option value="">Select District</option>
+                    {districts.map((district, index) => (
+                      <option key={index} value={district}>
+                        {district}
                       </option>
-                      <option value="Northern region">Northern region</option>
-                      <option value="Central Region">Central Region</option>
-                      <option value="Southern Region">Southern Region</option>
-                    </Form.Select>
-                  </Form.Group>
-                </Col>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
               </Row>
-              <Row>
-                <Col md={3}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>District</Form.Label>
-                    <Form.Select
-                      value={district}
-                      onChange={handleChangedistict}
-                    >
-                      <option value="">Select District</option>
-                      {districts.map((district, index) => (
-                        <option key={index} value={district}>
-                          {district}
-                        </option>
-                      ))}
-                    </Form.Select>
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col md={3}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Village</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Name of the Village"
-                      value={village}
-                      onChange={(e) => setVillage(e.target.value)}
-                    />
-                  </Form.Group>
-                </Col>
+              <Row className="px-2">
+                <Form.Group className="mb-3">
+                  <Form.Label>Village</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Name of the Village"
+                    value={village}
+                    onChange={(e) => setVillage(e.target.value)}
+                  />
+                </Form.Group>
               </Row>
             </div>
           </Dropdown.Menu>
         </Dropdown>
-      </Row> */}
+      </Row>
 
       <hr />
+
       <div className="farmer-list">
-        {currentFarmers.length > 0 ? (
-          currentFarmers.map((farmer, index) => (
+        {filteredFarmers.length > 0 ? (
+          filteredFarmers.map((farmer, index) => (
             <div key={index} className="card m-2">
-              <div
-                className="farmer-card p-3 m-2 d-flex align-items-center"
+              {/* <div
+                className="farmer-card p-1 m-2 d-flex align-items-center"
                 onClick={() => handleFarmerClick(farmer)}
                 style={{ cursor: "pointer" }}
               >
                 <div>
-                  <h6 style={{ marginBottom: "5px" }}>{farmer.farmerName}</h6>
+                  <h6 style={{ marginBottom: "5px" }} className="text-center">
+                    {farmer.farmerName}
+                  </h6>
                   <p style={{ marginBottom: "3px" }}>{farmer.farmerMobile}</p>
                   {farmer.stateName ? (
                     <p style={{ marginBottom: "0" }}>
@@ -453,7 +391,32 @@ const ListFarmer = () => {
                     </p>
                   ) : null}
                 </div>
-              </div>
+              </div> */}
+              <Card
+                className="p-2"
+                onClick={() => handleFarmerClick(farmer)}
+                style={{ cursor: "pointer" }}
+              >
+                <h5>
+                  <div className="d-flex justify-content-between">
+                    <div>{farmer.farmerName || "Farmer Name"}</div>
+                    <div style={{ color: "#6B7280" }}>
+                      {farmer.farmerMobile || "Farmer Mobile"}
+                    </div>
+                  </div>
+                </h5>
+                <div className="d-flex">
+                  <div className="fw-bold" style={{ width: "30%" }}>
+                    Location :
+                  </div>
+                  <div style={{ width: "70%" }}>
+                    <p style={{ color: "#6B7280" }}>
+                      {farmer.stateName}, {farmer.districtName},{" "}
+                      {farmer.villageName}
+                    </p>
+                  </div>
+                </div>
+              </Card>
             </div>
           ))
         ) : (

@@ -220,7 +220,7 @@ const AddFrpmNew = () => {
               </Form.Group>
 
               <Form.Label>Gender</Form.Label>
-              <div className="d-flex align-items-center">
+              <div className="d-flex align-items-center mb-3">
                 <Form.Check
                   type="radio"
                   id="male"
@@ -382,7 +382,9 @@ const AddFrpmNew = () => {
                   value={formData.districtName}
                   onChange={handleChangedistict}
                 >
-                  <option value="">Select District</option>
+                  <option value="" disabled>
+                    Select District
+                  </option>
                   {districts.map((district, index) => (
                     <option key={index} value={district}>
                       {district}

@@ -64,7 +64,7 @@ const HomeNew = () => {
               <button
                 size="lg"
                 style={{
-                  width: "156px",
+                  width: "140px",
                   borderRadius: "6px",
                   background: "#279A82",
                   border: "1px solid #279A82",
@@ -78,7 +78,7 @@ const HomeNew = () => {
               <button
                 size="lg"
                 style={{
-                  width: "156px",
+                  width: "140px",
                   height: "50px",
                   borderRadius: "6px",
                   background: "#279A82",

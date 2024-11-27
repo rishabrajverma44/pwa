@@ -310,12 +310,22 @@ const FarmerDetails = () => {
         <FontAwesomeIcon icon={faChevronLeft} style={{ marginRight: "5px" }} />
         <b>Farmers Details</b>
       </div>
-      <Card className="p-3 d-flex flex-row align-items-center justify-content-between">
-        <div className="d-flex flex-row align-items-center">
-          <div>
-            <h5>{farmer.farmerName || "Farmer Name"}</h5>
-            <p className="mb-0" style={{ color: "#6B7280" }}>
+      <Card className="p-2">
+        <h5>
+          <div className="d-flex justify-content-between">
+            <div>{farmer.farmerName || "Farmer Name"}</div>
+            <div style={{ color: "#6B7280" }}>
               {farmer.farmerMobile || "Farmer Mobile"}
+            </div>
+          </div>
+        </h5>
+        <div className="d-flex">
+          <div className="fw-bold" style={{ width: "30%" }}>
+            Location :
+          </div>
+          <div style={{ width: "70%" }}>
+            <p style={{ color: "#6B7280" }}>
+              {farmer.stateName}, {farmer.districtName}, {farmer.villageName}
             </p>
           </div>
         </div>
@@ -323,12 +333,12 @@ const FarmerDetails = () => {
 
       <div className="my-3">
         {Object.entries(sections).map(([sectionName, cards]) => (
-          <Card key={sectionName} className="mb-6 p-2 my-2">
-            <h2 className="text-xl font-bold mb-4">
+          <Card key={sectionName} className="p-2 my-2">
+            <h2 className="text-xl font-bold mb-2">
               {sectionName.replace(/_/g, " ")}
             </h2>
             <div>
-              <Row className="mb-4">
+              <Row className="mb-1">
                 {cards.map((cardObj, index) =>
                   Object.entries(cardObj).map(([cardType, items]) => {
                     if (cardType === "green_card") {
@@ -368,7 +378,7 @@ const FarmerDetails = () => {
                 )}
               </Row>
 
-              <Row className="g-3">
+              <Row className="gap-2">
                 {cards.map((cardObj, index) =>
                   Object.entries(cardObj).map(([cardType, items]) => {
                     if (
@@ -380,7 +390,7 @@ const FarmerDetails = () => {
                           key={`${cardType}-${index}`}
                           md={6}
                           sm={12}
-                          className="mb-4"
+                          className="mb-1"
                         >
                           <Card className="flex-fill h-100">
                             <div
