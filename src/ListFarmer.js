@@ -235,7 +235,7 @@ const ListFarmer = () => {
           />
           <b>List of Farmers</b>
         </Col>
-        {/* <Col className="my-4">
+        <Col className="my-4">
           <Button
             onClick={sync}
             style={{
@@ -249,7 +249,7 @@ const ListFarmer = () => {
           >
             <FaSync color="#279A82" />
           </Button>
-        </Col> */}
+        </Col>
       </Row>
       <Row>
         <Col md={6}>
@@ -364,34 +364,6 @@ const ListFarmer = () => {
         {filteredFarmers.length > 0 ? (
           filteredFarmers.map((farmer, index) => (
             <div key={index} className="card m-2">
-              {/* <div
-                className="farmer-card p-1 m-2 d-flex align-items-center"
-                onClick={() => handleFarmerClick(farmer)}
-                style={{ cursor: "pointer" }}
-              >
-                <div>
-                  <h6 style={{ marginBottom: "5px" }} className="text-center">
-                    {farmer.farmerName}
-                  </h6>
-                  <p style={{ marginBottom: "3px" }}>{farmer.farmerMobile}</p>
-                  {farmer.stateName ? (
-                    <p style={{ marginBottom: "0" }}>
-                      <span class="fw-bold">Province </span>:{farmer.stateName}
-                    </p>
-                  ) : null}
-                  {farmer.districName ? (
-                    <p style={{ marginBottom: "0" }}>
-                      <span class="fw-bold">District </span>:
-                      {farmer.districName}
-                    </p>
-                  ) : null}
-                  {farmer.villageName ? (
-                    <p style={{ marginBottom: "0" }}>
-                      <span class="fw-bold">Village </span>:{farmer.villageName}
-                    </p>
-                  ) : null}
-                </div>
-              </div> */}
               <Card
                 className="p-2"
                 onClick={() => handleFarmerClick(farmer)}
