@@ -7,7 +7,6 @@ import {
   Row,
   Col,
   Pagination,
-  Image,
   Dropdown,
   Card,
 } from "react-bootstrap";
@@ -20,15 +19,15 @@ import axios from "axios";
 
 const ListFarmer = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(null);
   const [search, setSearch] = useState("");
   const [province, setProvince] = useState("");
   const [district, setDistrict] = useState("");
   const [village, setVillage] = useState("");
   const [filteredFarmers, setFilteredFarmers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [farmersPerPage] = useState(5);
+  const [farmersPerPage] = useState(2);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [reset, setReset] = useState(false);
 
   const getFarmersFromStorage = () => {
     const storedFarmers = localStorage.getItem("farmer");
@@ -36,6 +35,10 @@ const ListFarmer = () => {
   };
   let allFarmers = getFarmersFromStorage();
   useEffect(() => {
+    if (reset) {
+      setReset(false);
+      return;
+    }
     const filtered = allFarmers.filter((farmer) => {
       const matchesSearch =
         !search ||
@@ -109,8 +112,6 @@ const ListFarmer = () => {
       setDistricts(centralDistricts);
     } else if (region === "Southern Region") {
       setDistricts(southernDistricts);
-    } else {
-      setDistricts([]);
     }
     setDistrict("");
   };
@@ -120,11 +121,12 @@ const ListFarmer = () => {
   };
 
   const handleReset = () => {
-    setCurrentPage(1);
+    setReset(true);
     setSearch("");
     setProvince("");
-    setDistricts([]);
+    setDistrict("");
     setVillage("");
+    setCurrentPage(1);
     setFilteredFarmers(allFarmers);
   };
 
@@ -156,10 +158,12 @@ const ListFarmer = () => {
       Swal.fire({
         html: `<b>Check Internet connection !</b>`,
         allowOutsideClick: false,
+        confirmButtonColor: "#279A82",
       });
     } else if (unsyncedFarmers.length === 0) {
       Swal.fire({
         text: "All data are synced",
+        confirmButtonColor: "#279A82",
       });
     } else if (actualStatus && unsyncedFarmers.length !== 0) {
       let shouldCancel = false;
@@ -200,19 +204,19 @@ const ListFarmer = () => {
         } catch (error) {
           console.error(`Failed to sync farmer ${farmer.farmerName}`, error);
           Swal.fire({
-            html: `<b>Something went wrong...</b>`,
+            html: `<b>Somthing went wrong !</b>`,
             allowOutsideClick: false,
+            confirmButtonColor: "#279A82",
           });
         }
       }
-
       Swal.close();
       saveFarmersToStorage(allFarmers);
-      setLoading(false);
     } else {
       Swal.fire({
         html: `<b>Somthing went wrong !</b>`,
         allowOutsideClick: false,
+        confirmButtonColor: "#28a745",
       });
     }
   };
@@ -220,6 +224,20 @@ const ListFarmer = () => {
   const sync = () => {
     syncDataOneByOne();
   };
+  useEffect(() => {
+    const pageLinks = document.querySelectorAll(".page-link");
+    pageLinks.forEach((pageLink) => {
+      if (pageLink.parentElement.classList.contains("active")) {
+        pageLink.style.backgroundColor = "#279A82";
+        pageLink.style.borderColor = "#279A82";
+        pageLink.style.color = "white";
+      } else {
+        pageLink.style.backgroundColor = "";
+        pageLink.style.borderColor = "";
+        pageLink.style.color = "";
+      }
+    });
+  }, [currentFarmers]);
 
   return (
     <Container className="my-4">
@@ -245,6 +263,7 @@ const ListFarmer = () => {
               background: "#FFFFFF",
               color: "#FFFFFF",
               fontWeight: 500,
+              display: "none",
             }}
           >
             <FaSync color="#279A82" />
@@ -252,7 +271,7 @@ const ListFarmer = () => {
         </Col>
       </Row>
       <Row>
-        <Col md={6}>
+        <Col>
           <Form.Group
             controlId="number"
             style={{ position: "relative" }}
@@ -293,7 +312,7 @@ const ListFarmer = () => {
             fontWeight: 500,
           }}
         >
-          {showDropdown ? "Hide" : "Show"}
+          {showDropdown ? "Hide Filter" : "Show Filter"}
         </Button>
 
         <Button
@@ -302,9 +321,9 @@ const ListFarmer = () => {
           style={{
             borderRadius: "6px",
             width: "140px",
-            background: "#279A82",
+            background: "#FFFFFF",
             border: "1px solid #279A82",
-            color: "#FFFFFF",
+            color: "#279A82",
             fontWeight: 500,
           }}
         >
@@ -334,11 +353,12 @@ const ListFarmer = () => {
                   <Form.Label>District</Form.Label>
                   <Form.Select value={district} onChange={handleChangedistict}>
                     <option value="">Select District</option>
-                    {districts.map((district, index) => (
-                      <option key={index} value={district}>
-                        {district}
-                      </option>
-                    ))}
+                    {districts &&
+                      districts.map((district, index) => (
+                        <option key={index} value={district}>
+                          {district}
+                        </option>
+                      ))}
                   </Form.Select>
                 </Form.Group>
               </Row>
@@ -378,10 +398,10 @@ const ListFarmer = () => {
                   </div>
                 </h5>
                 <div className="d-flex">
-                  <div className="fw-bold" style={{ width: "30%" }}>
+                  <div className="fw-bold" style={{ width: "25%" }}>
                     Location :
                   </div>
-                  <div style={{ width: "70%" }}>
+                  <div style={{ width: "75%" }}>
                     <p style={{ color: "#6B7280" }}>
                       {farmer.stateName}, {farmer.districtName},{" "}
                       {farmer.villageName}
@@ -412,6 +432,7 @@ const ListFarmer = () => {
           <Pagination.Prev
             onClick={() => paginate(currentPage - 1)}
             disabled={currentPage === 1}
+            className="mx-1"
           />
           {[...Array(Math.ceil(filteredFarmers.length / farmersPerPage))].map(
             (_, index) => (
@@ -419,6 +440,10 @@ const ListFarmer = () => {
                 key={index + 1}
                 onClick={() => paginate(index + 1)}
                 active={index + 1 === currentPage}
+                style={{
+                  backgroundColor: index + 1 === currentPage ? "#279A82" : "",
+                  borderColor: index + 1 === currentPage ? "#279A82" : "",
+                }}
               >
                 {index + 1}
               </Pagination.Item>
@@ -429,6 +454,7 @@ const ListFarmer = () => {
             disabled={
               currentPage === Math.ceil(filteredFarmers.length / farmersPerPage)
             }
+            className="mx-1"
           />
         </Pagination>
       )}
@@ -440,6 +466,7 @@ const ListFarmer = () => {
           width: "100%",
           height: "50px",
           background: "#279A82",
+          borderColor: "#279A82",
           top: "710px",
           left: "16px",
           padding: "13px 21px",

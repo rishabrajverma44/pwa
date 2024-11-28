@@ -87,3 +87,54 @@ self.addEventListener("fetch", (event) => {
     })()
   );
 });
+
+// self.addEventListener("sync", (event) => {
+//   if (event.tag === "sync-data") {
+//     event.waitUntil(syncData());
+//   }
+// });
+
+// const saveFarmersToStorage = (farmers) => {
+//   localStorage.setItem("farmer", JSON.stringify(farmers));
+// };
+// const getFarmersFromStorage = async () => {
+//   const storedFarmers = localStorage.getItem("farmer");
+//   return storedFarmers ? JSON.parse(storedFarmers) : [];
+// };
+
+// const syncDataOneByOne = async () => {
+//   const allFarmers = await getFarmersFromStorage();
+//   const unsyncedFarmers = allFarmers.filter((farmer) => farmer.synced === 0);
+
+//   for (let i = 0; i < unsyncedFarmers.length; i++) {
+//     const farmer = unsyncedFarmers[i];
+//     const { synced, ...farmerData } = farmer;
+//     try {
+//       await new Promise((resolve) => setTimeout(resolve, 2000));
+//       const response = await axios.post(
+//         "http://traningl.indevconsultancy.in/pwa-blog-api/farmer_insert.php",
+//         farmerData
+//       );
+//       console.log(response);
+//       console.log(
+//         `${i + 1} synced successfully out of ${unsyncedFarmers.length} name: ${
+//           unsyncedFarmers.name
+//         } `
+//       );
+//     } catch (error) {
+//       console.error(`Failed to sync farmer ${farmer.farmerName}`, error);
+//     }
+//   }
+//   saveFarmersToStorage(allFarmers);
+//   setLoading(false);
+// };
+
+// async function syncData() {
+//   try {
+//     await syncDataOneByOne();
+//     console.log(response);
+//     console.log("Background sync complete!");
+//   } catch (error) {
+//     console.error("Background sync failed:", error);
+//   }
+// }

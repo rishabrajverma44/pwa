@@ -17,4 +17,19 @@ export default function swDev() {
     .catch((error) => {
       console.error("Service Worker registration failed:", error);
     });
+
+  if ("serviceWorker" in navigator && "SyncManager" in window) {
+    navigator.serviceWorker.ready
+      .then((sw) => {
+        return sw.sync.register("sync-data");
+      })
+      .then(() => {
+        console.log("Sync registered successfully!");
+      })
+      .catch((error) => {
+        console.error("Failed to register sync:", error);
+      });
+  } else {
+    console.warn("Background Sync is not supported in this browser.");
+  }
 }
