@@ -25,7 +25,7 @@ const ListFarmer = () => {
   const [village, setVillage] = useState("");
   const [filteredFarmers, setFilteredFarmers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [farmersPerPage] = useState(2);
+  const [farmersPerPage] = useState(5);
   const [showDropdown, setShowDropdown] = useState(false);
   const [reset, setReset] = useState(false);
 
