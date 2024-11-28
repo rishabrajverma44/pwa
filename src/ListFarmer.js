@@ -34,26 +34,35 @@ const ListFarmer = () => {
     return storedFarmers ? JSON.parse(storedFarmers) : [];
   };
   let allFarmers = getFarmersFromStorage();
+
   useEffect(() => {
     if (reset) {
       setReset(false);
-      return;
     }
+
     const filtered = allFarmers.filter((farmer) => {
       const matchesSearch =
         !search ||
         farmer.farmerMobile.includes(search) ||
         farmer.farmerName.includes(search);
       const matchesProvince = !province || farmer.stateName === province;
-      const matchesDistrict = !district || farmer.districName === district;
+      const matchesDistrict = !district || farmer.districtName === district;
       const matchesVillage = !village || farmer.villageName.includes(village);
       return (
         matchesSearch && matchesProvince && matchesDistrict && matchesVillage
       );
     });
+
     setFilteredFarmers(filtered);
     setCurrentPage(1);
-  }, [province, district, village, search]);
+  }, [province, district, village, search, reset]);
+
+  const totalPages = Math.ceil(filteredFarmers.length / farmersPerPage);
+
+  const paginate = (pageNumber) => {
+    const validPageNumber = Math.max(1, Math.min(pageNumber, totalPages));
+    setCurrentPage(validPageNumber);
+  };
 
   const indexOfLastFarmer = currentPage * farmersPerPage;
   const indexOfFirstFarmer = indexOfLastFarmer - farmersPerPage;
@@ -61,13 +70,13 @@ const ListFarmer = () => {
     indexOfFirstFarmer,
     indexOfLastFarmer
   );
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleFarmerClick = (farmer) => {
     navigate("/FarmerDetails", { state: { farmer } });
   };
 
   const [districts, setDistricts] = useState([]);
+
   const northernDistricts = [
     "Chitipa",
     "Karonga",
@@ -192,7 +201,7 @@ const ListFarmer = () => {
         try {
           await new Promise((resolve) => setTimeout(resolve, 2000));
           const response = await axios.post(
-            "http://traningl.indevconsultancy.in/pwa-blog-api/farmer_insert.php",
+            "https://mne.agrotutor.co/apinew/farmer_insert.php",
             farmerData
           );
           console.log(response);
@@ -263,7 +272,6 @@ const ListFarmer = () => {
               background: "#FFFFFF",
               color: "#FFFFFF",
               fontWeight: 500,
-              display: "none",
             }}
           >
             <FaSync color="#279A82" />
@@ -381,8 +389,8 @@ const ListFarmer = () => {
       <hr />
 
       <div className="farmer-list">
-        {filteredFarmers.length > 0 ? (
-          filteredFarmers.map((farmer, index) => (
+        {currentFarmers.length > 0 ? (
+          currentFarmers.map((farmer, index) => (
             <div key={index} className="card m-2">
               <Card
                 className="p-2"
@@ -434,26 +442,22 @@ const ListFarmer = () => {
             disabled={currentPage === 1}
             className="mx-1"
           />
-          {[...Array(Math.ceil(filteredFarmers.length / farmersPerPage))].map(
-            (_, index) => (
-              <Pagination.Item
-                key={index + 1}
-                onClick={() => paginate(index + 1)}
-                active={index + 1 === currentPage}
-                style={{
-                  backgroundColor: index + 1 === currentPage ? "#279A82" : "",
-                  borderColor: index + 1 === currentPage ? "#279A82" : "",
-                }}
-              >
-                {index + 1}
-              </Pagination.Item>
-            )
-          )}
+          {[...Array(totalPages)].map((_, index) => (
+            <Pagination.Item
+              key={index + 1}
+              onClick={() => paginate(index + 1)}
+              active={index + 1 === currentPage}
+              style={{
+                backgroundColor: index + 1 === currentPage ? "#279A82" : "",
+                borderColor: index + 1 === currentPage ? "#279A82" : "",
+              }}
+            >
+              {index + 1}
+            </Pagination.Item>
+          ))}
           <Pagination.Next
             onClick={() => paginate(currentPage + 1)}
-            disabled={
-              currentPage === Math.ceil(filteredFarmers.length / farmersPerPage)
-            }
+            disabled={currentPage === totalPages}
             className="mx-1"
           />
         </Pagination>

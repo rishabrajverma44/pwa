@@ -112,7 +112,7 @@ self.addEventListener("fetch", (event) => {
 //     try {
 //       await new Promise((resolve) => setTimeout(resolve, 2000));
 //       const response = await axios.post(
-//         "http://traningl.indevconsultancy.in/pwa-blog-api/farmer_insert.php",
+//         "https://mne.agrotutor.co/apinew/farmer_insert.php",
 //         farmerData
 //       );
 //       console.log(response);
