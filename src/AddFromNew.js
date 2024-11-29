@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Container, Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import "./index.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const AddFrpmNew = () => {
   const navigate = useNavigate();
@@ -19,7 +21,7 @@ const AddFrpmNew = () => {
     agroClimaticZone: "",
     soilTexture: "",
     synced: 0,
-    stateName: "",
+    province: "",
     districtName: "",
     villageName: "",
     isExtensionOfficer: "No",
@@ -132,7 +134,7 @@ const AddFrpmNew = () => {
     setSelectedRegion(region);
     setFormData((prevData) => ({
       ...prevData,
-      stateName: region,
+      province: region,
     }));
 
     if (region === "Northern region") {
@@ -175,9 +177,22 @@ const AddFrpmNew = () => {
           {Array.from({ length: 3 }, (_, index) => (
             <div
               key={index}
-              className={`step ${currentStep === index + 1 ? "active" : ""}`}
+              className={`step ${
+                currentStep === index + 1
+                  ? "active"
+                  : currentStep > index + 1
+                  ? "completed"
+                  : ""
+              }`}
             >
-              <span>{`0${index + 1}`}</span>
+              {currentStep > index + 1 ? (
+                <span>
+                  <FontAwesomeIcon icon={faCheck} />
+                </span>
+              ) : (
+                <span>{`0${index + 1}`}</span>
+              )}
+
               <br />
               {index === 0
                 ? "Farmer Details"
@@ -187,6 +202,7 @@ const AddFrpmNew = () => {
             </div>
           ))}
         </div>
+
         <hr />
 
         <Form onSubmit={handleSubmit}>
@@ -249,14 +265,29 @@ const AddFrpmNew = () => {
                   name="ageRange"
                   value={formData.ageRange}
                   onChange={handleAgeChange}
+                  style={{ color: formData.ageRange ? "#000000" : "#D1D5DB" }}
                 >
-                  <option>Select Age</option>
-                  <option value="15-24">15-24</option>
-                  <option value="25-34">25-34</option>
-                  <option value="35-44">35-44</option>
-                  <option value="45-54">45-54</option>
-                  <option value="55-64">55-64</option>
-                  <option value="65+">65+</option>
+                  <option value="" disabled style={{ color: "#D1D5DB" }}>
+                    Select Age
+                  </option>
+                  <option value="15-24" style={{ color: "#000000" }}>
+                    15-24
+                  </option>
+                  <option value="25-34" style={{ color: "#000000" }}>
+                    25-34
+                  </option>
+                  <option value="35-44" style={{ color: "#000000" }}>
+                    35-44
+                  </option>
+                  <option value="45-54" style={{ color: "#000000" }}>
+                    45-54
+                  </option>
+                  <option value="55-64" style={{ color: "#000000" }}>
+                    55-64
+                  </option>
+                  <option value="65+" style={{ color: "#000000" }}>
+                    65+
+                  </option>
                 </Form.Select>
               </Form.Group>
 
@@ -264,30 +295,85 @@ const AddFrpmNew = () => {
 
               <Form.Check
                 type="checkbox"
+                id="Soybean"
+                label="Soybean"
+                value="Soybean"
+                className="my-2"
+                checked={formData.selectedItems.includes("Soybean")}
+                onChange={handleCheckboxChange}
+              />
+
+              <Form.Check
+                type="checkbox"
+                id="Cowpea"
+                label="Cowpea"
+                value="Cowpea"
+                checked={formData.selectedItems.includes("Cowpea")}
+                onChange={handleCheckboxChange}
+              />
+
+              <Form.Check
+                type="checkbox"
+                id="Pigeon_Pea"
+                label="Pigeon Pea"
+                value="Pigeon_Pea"
+                className="my-2"
+                checked={formData.selectedItems.includes("Pigeon_Pea")}
+                onChange={handleCheckboxChange}
+              />
+
+              <Form.Check
+                type="checkbox"
                 id="Maize"
                 label="Maize"
                 value="Maize"
-                className="my-2"
                 checked={formData.selectedItems.includes("Maize")}
                 onChange={handleCheckboxChange}
               />
-
               <Form.Check
                 type="checkbox"
-                id="Pearl_Millet"
-                label="Pearl Millet"
-                value="Pearl_Millet"
-                checked={formData.selectedItems.includes("Pearl_Millet")}
+                id="Potatoes"
+                label="Potatoes"
+                value="Potatoes"
+                className="my-2"
+                checked={formData.selectedItems.includes("Potatoes")}
+                onChange={handleCheckboxChange}
+              />
+              <Form.Check
+                type="checkbox"
+                id="Cassava"
+                label="Cassava"
+                value="Cassava"
+                checked={formData.selectedItems.includes("Cassava")}
                 onChange={handleCheckboxChange}
               />
 
               <Form.Check
                 type="checkbox"
-                id="Pigeonpea"
-                label="Pigeonpea"
-                value="Pigeonpea"
+                id="Tobacco"
+                label="Tobacco"
+                value="Tobacco"
                 className="my-2"
-                checked={formData.selectedItems.includes("Pigeonpea")}
+                checked={formData.selectedItems.includes("Tobacco")}
+                onChange={handleCheckboxChange}
+              />
+
+              <Form.Check
+                type="checkbox"
+                id="Sweet "
+                label="Sweet "
+                value="Sweet "
+                checked={formData.selectedItems.includes("Sweet ")}
+                onChange={handleCheckboxChange}
+              />
+
+              <Form.Check
+                type="checkbox"
+                id="Potato"
+                label="Potato"
+                value="Potato"
+                className="my-2"
+                checked={formData.selectedItems.includes("Potato")}
                 onChange={handleCheckboxChange}
               />
 
@@ -296,6 +382,7 @@ const AddFrpmNew = () => {
                 id="Groundnut"
                 label="Groundnut"
                 value="Groundnut"
+                className="my-2"
                 checked={formData.selectedItems.includes("Groundnut")}
                 onChange={handleCheckboxChange}
               />
@@ -310,7 +397,7 @@ const AddFrpmNew = () => {
               />
 
               {formData.selectedItems.includes("Other") && (
-                <Form.Group controlId="otherItem" className="px-2 mt-1">
+                <Form.Group controlId="otherItem" className="px-2 mt-2">
                   <Form.Control
                     type="text"
                     value={formData.otherItem || ""}
@@ -334,13 +421,22 @@ const AddFrpmNew = () => {
                   name="agroClimaticZone"
                   value={formData.agroClimaticZone}
                   onChange={handleChange}
+                  style={{
+                    color: formData.agroClimaticZone ? "#000000" : "#D1D5DB",
+                  }}
                 >
                   <option value="" disabled>
                     Select Agro-climatic zone
                   </option>
-                  <option value="Lakeshore">Lakeshore</option>
-                  <option value="Mid-Altitude">Mid-Altitude</option>
-                  <option value="High-Altitude">High-Altitude</option>
+                  <option value="Lakeshore" style={{ color: "#000000" }}>
+                    Lakeshore
+                  </option>
+                  <option value="Mid-Altitude" style={{ color: "#000000" }}>
+                    Mid-Altitude
+                  </option>
+                  <option value="High-Altitude" style={{ color: "#000000" }}>
+                    High-Altitude
+                  </option>
                 </Form.Select>
               </Form.Group>
               <Form.Group className="mb-3">
@@ -350,28 +446,42 @@ const AddFrpmNew = () => {
                   name="soilTexture"
                   value={formData.soilTexture}
                   onChange={handleChange}
+                  style={{
+                    color: formData.soilTexture ? "#000000" : "#D1D5DB",
+                  }}
                 >
                   <option value="" disabled>
                     Select texture
                   </option>
-                  <option value="Sandy">Sandy</option>
-                  <option value="Clayey">Clayey</option>
+                  <option value="Sandy" style={{ color: "#000000" }}>
+                    Sandy
+                  </option>
+                  <option value="Clayey" style={{ color: "#000000" }}>
+                    Clayey
+                  </option>
                 </Form.Select>
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label>Province</Form.Label>
                 <Form.Select
                   required
-                  name="stateName"
-                  value={formData.stateName}
+                  name="province"
+                  value={formData.province}
                   onChange={handleRegionChange}
+                  style={{ color: formData.province ? "#000000" : "#D1D5DB" }}
                 >
                   <option value="" disabled>
                     Select Province
                   </option>
-                  <option value="Northern region">Northern region</option>
-                  <option value="Central Region">Central Region</option>
-                  <option value="Southern Region">Southern Region</option>
+                  <option value="Northern region" style={{ color: "#000000" }}>
+                    Northern region
+                  </option>
+                  <option value="Central Region" style={{ color: "#000000" }}>
+                    Central Region
+                  </option>
+                  <option value="Southern Region" style={{ color: "#000000" }}>
+                    Southern Region
+                  </option>
                 </Form.Select>
               </Form.Group>
               <Form.Group className="mb-3">
@@ -381,12 +491,19 @@ const AddFrpmNew = () => {
                   name="districtName"
                   value={formData.districtName}
                   onChange={handleChangedistict}
+                  style={{
+                    color: formData.districtName ? "#000000" : "#D1D5DB",
+                  }}
                 >
                   <option value="" disabled>
                     Select District
                   </option>
                   {districts.map((district, index) => (
-                    <option key={index} value={district}>
+                    <option
+                      key={index}
+                      value={district}
+                      style={{ color: "#000000" }}
+                    >
                       {district}
                     </option>
                   ))}
@@ -401,6 +518,9 @@ const AddFrpmNew = () => {
                   name="villageName"
                   value={formData.villageName}
                   onChange={handleChange}
+                  style={{
+                    color: formData.villageName ? "#000000" : "#D1D5DB",
+                  }}
                 />
               </Form.Group>
             </fieldset>
@@ -486,7 +606,7 @@ const AddFrpmNew = () => {
                 (currentStep === 2 &&
                   (!formData.agroClimaticZone ||
                     !formData.soilTexture ||
-                    !formData.stateName ||
+                    !formData.province ||
                     !formData.districtName ||
                     !formData.villageName))
               }

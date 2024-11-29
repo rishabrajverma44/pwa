@@ -45,7 +45,7 @@ const ListFarmer = () => {
         !search ||
         farmer.farmerMobile.includes(search) ||
         farmer.farmerName.includes(search);
-      const matchesProvince = !province || farmer.stateName === province;
+      const matchesProvince = !province || farmer.province === province;
       const matchesDistrict = !district || farmer.districtName === district;
       const matchesVillage = !village || farmer.villageName.includes(village);
       return (
@@ -201,7 +201,7 @@ const ListFarmer = () => {
         try {
           await new Promise((resolve) => setTimeout(resolve, 2000));
           const response = await axios.post(
-            "https://mne.agrotutor.co/apinew/farmer_insert.php",
+            "https://cors-anywhere.herokuapp.com/https://mne.agrotutor.co/apinew/farmer_insert.php",
             farmerData
           );
           console.log(response);
@@ -411,7 +411,7 @@ const ListFarmer = () => {
                   </div>
                   <div style={{ width: "75%" }}>
                     <p style={{ color: "#6B7280" }}>
-                      {farmer.stateName}, {farmer.districtName},{" "}
+                      {farmer.province}, {farmer.districtName},{" "}
                       {farmer.villageName}
                     </p>
                   </div>

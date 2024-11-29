@@ -1,4 +1,3 @@
-/* Global Styles */
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -34,6 +33,12 @@ code {
   }
 }
 
+
+.form-control-custom::placeholder {
+  color: #D1D5DB; 
+}
+
+
 .step-indicator {
   display: flex;
   justify-content: space-between;
@@ -47,7 +52,9 @@ code {
 }
 
 .step span {
-  background-color: #f1f1f1;
+  background-color: #ffffff;
+  border: 2px solid  #D1D5DB;
+  color: #D1D5DB;
   border-radius: 50%;
   width: 35px;
   height: 35px;
@@ -57,26 +64,31 @@ code {
 }
 
 .step.active span {
-  background-color: #279A82;
-  color: white;
+  background-color: #ffffff;
+  border: 2px solid  #279A82;
+  color:  #279A82;
+}
+
+.step.completed span {
+  background-color:  #279A82;
+  border: 2px solid  #279A82;
+  color:  #ffffff; 
 }
 
 .step:not(:last-child)::after {
-  content: '';
+  content: "";
   position: absolute;
-  top: 15px;
-  /* Center the line vertically */
+  top: 15px; 
   right: -50%;
-  /* Position it to the right of the step */
   width: 100%;
   height: 2px;
   background: #f1f1f1;
   z-index: -1;
 }
 
-.step.active:not(:last-child)::after {
+.step.active:not(:last-child)::after,
+.step.completed:not(:last-child)::after {
   background: #279A82;
-  /* Active step line color */
 }
 
 .button-group {

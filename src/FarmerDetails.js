@@ -51,7 +51,7 @@ const FarmerDetails = () => {
     ],
     Agroforestry: [
       {
-        green_card: ["Gliricidia-maizeintercropping"],
+        green_card: ["Gliricidia-maize intercropping"],
       },
       {
         yellow_card: ["Biomass transfer"],
@@ -92,7 +92,7 @@ const FarmerDetails = () => {
     ],
     Agroforestry: [
       {
-        green_card: ["Gliricidia-maizeintercropping"],
+        green_card: ["Gliricidia-maize intercropping"],
       },
       {
         gray_card: ["Biomass transfer"],
@@ -131,7 +131,7 @@ const FarmerDetails = () => {
     ],
     Agroforestry: [
       {
-        green_card: ["Gliricidia-maizeintercropping"],
+        green_card: ["Gliricidia-maize intercropping"],
       },
       {
         gray_card: ["Biomass transfer"],
@@ -168,7 +168,7 @@ const FarmerDetails = () => {
     ],
     Agroforestry: [
       {
-        green_card: ["Gliricidia-maizeintercropping"],
+        green_card: ["Gliricidia-maize intercropping"],
       },
       {
         gray_card: ["Biomass transfer"],
