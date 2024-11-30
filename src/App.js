@@ -46,25 +46,21 @@ function App() {
   localStorage.setItem("documentContent2", html2);
 
   useEffect(() => {
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-    const promptEvent = (event) => {
+    const handleBeforeInstallPrompt = (event) => {
       event.preventDefault();
       setDeferredPrompt(event);
-
-      if (isMobile) {
-        setTimeout(() => {
-          setShowModal(true);
-        }, 2000);
-      } else {
-        setShowModal(true);
-      }
+      setShowModal(true);
     };
 
-    window.addEventListener("beforeinstallprompt", promptEvent);
+    console.log(deferredPrompt);
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
 
     return () => {
-      window.removeEventListener("beforeinstallprompt", promptEvent);
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt
+      );
     };
   }, []);
 

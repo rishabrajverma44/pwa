@@ -3,19 +3,9 @@
   "name": "AgroTutor",
   "icons": [
     {
-      "src": "/images/svgviewer-png-output.png",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "/images/svgviewer-png-output.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "/images/svgviewer-png-output.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "src": "favicon.ico",
+      "sizes": "192x192",
+      "type": "image/png"
     }
   ],
   "start_url": ".",
