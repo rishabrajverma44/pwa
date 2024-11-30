@@ -1,19 +1,19 @@
 {
-  "short_name": "PWA",
-  "name": "AgroTutor - App",
+  "short_name": "AgroTutor",
+  "name": "AgroTutor",
   "icons": [
     {
-      "src": "download.png",
+      "src": "/images/svgviewer-png-output.png",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "download.png",
+      "src": "/images/svgviewer-png-output.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "download.png",
+      "src": "/images/svgviewer-png-output.png",
       "type": "image/png",
       "sizes": "512x512"
     }

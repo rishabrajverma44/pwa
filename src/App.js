@@ -8,6 +8,7 @@ import AddFromNew from "./AddFromNew.js";
 import ListFarmer from "./ListFarmer.js";
 import FarmerDetails from "./FarmerDetails.js";
 import Document from "./Document.js";
+import { openDB } from "idb";
 import Doc1HTML from "./doc1HTML";
 import Doc2HTML from "./doc2HTML.js";
 
@@ -17,6 +18,30 @@ function App() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
+  const saveVideosToIndexedDB = async () => {
+    try {
+      const db = await openDB("videoDatabase", 1, {
+        upgrade(db) {
+          if (!db.objectStoreNames.contains("videos")) {
+            db.createObjectStore("videos");
+          }
+        },
+      });
+      const response1 = await fetch("/demo.mp4");
+      const blob1 = await response1.blob();
+
+      const response2 = await fetch("/newdemo.mp4");
+      const blob2 = await response2.blob();
+      await db.put("videos", blob1, "demoVideo");
+      await db.put("videos", blob2, "demoVideo1");
+    } catch (error) {
+      console.error("Failed to save videos to IndexedDB:", error);
+    }
+  };
+
+  useEffect(() => {
+    saveVideosToIndexedDB();
+  });
   localStorage.setItem("documentContent1", html1);
   localStorage.setItem("documentContent2", html2);
 
@@ -71,7 +96,7 @@ function App() {
               </div>
 
               <div className="d-flex justify-content-center mt-3 mt-sm-0">
-                <h3 style={{ fontWeight: "600" }}>
+                <h3>
                   <b>AgroTutor</b>
                 </h3>
               </div>

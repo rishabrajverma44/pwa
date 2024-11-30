@@ -201,7 +201,7 @@ const ListFarmer = () => {
         try {
           await new Promise((resolve) => setTimeout(resolve, 2000));
           const response = await axios.post(
-            "https://cors-anywhere.herokuapp.com/https://mne.agrotutor.co/apinew/farmer_insert.php",
+            "https://mne.agrotutor.co/apinew/farmer_insert.php",
             farmerData
           );
           console.log(response);

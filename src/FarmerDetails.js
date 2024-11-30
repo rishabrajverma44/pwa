@@ -325,7 +325,7 @@ const FarmerDetails = () => {
           </div>
           <div style={{ width: "70%" }}>
             <p style={{ color: "#6B7280" }}>
-              {farmer.stateName}, {farmer.districtName}, {farmer.villageName}
+              {farmer.province}, {farmer.districtName}, {farmer.villageName}
             </p>
           </div>
         </div>
