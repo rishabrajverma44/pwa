@@ -5,10 +5,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 import {
-  faLocationDot,
   faThumbsUp,
   faThumbsDown,
+  faShare,
 } from "@fortawesome/free-solid-svg-icons";
+
+import html2canvas from "html2canvas";
 
 const FarmerDetails = () => {
   const navigate = useNavigate();
@@ -300,150 +302,222 @@ const FarmerDetails = () => {
     LoadData();
   }, []);
 
+  const captureAndShare = async () => {
+    try {
+      const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(
+        navigator.userAgent
+      );
+
+      if (isMobile) {
+        const element = document.getElementById("capture-area");
+
+        if (!element) {
+          console.error("No element with id 'capture-area' found!");
+          return;
+        }
+
+        const canvas = await html2canvas(element);
+        const image = canvas.toDataURL("image/png");
+
+        const byteString = atob(image.split(",")[1]);
+        const arrayBuffer = new ArrayBuffer(byteString.length);
+        const uintArray = new Uint8Array(arrayBuffer);
+
+        for (let i = 0; i < byteString.length; i++) {
+          uintArray[i] = byteString.charCodeAt(i);
+        }
+
+        const blob = new Blob([arrayBuffer], { type: "image/png" });
+        const file = new File([blob], "screenshot.png", { type: "image/png" });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator
+            .share({
+              files: [file],
+              title: "Check out this screenshot!",
+              text: "Sharing an image from my app!",
+            })
+            .then(() => console.log("Share was successful."))
+            .catch((error) => console.log("Sharing failed", error));
+        } else {
+          console.log("Your system doesn't support sharing files.");
+        }
+      } else {
+        console.log(
+          "Your system doesn't support sharing files or you're not on a mobile device."
+        );
+      }
+    } catch (error) {
+      console.error("Error capturing and sharing:", error);
+    }
+  };
+
   return (
     <Container className="my-5">
-      <div
-        style={{ cursor: "pointer" }}
-        className="my-4"
-        onClick={() => navigate("/ListFarmer")}
-      >
-        <FontAwesomeIcon icon={faChevronLeft} style={{ marginRight: "5px" }} />
-        <b>Farmers Details</b>
-      </div>
-      <Card className="p-2">
-        <h5>
-          <div className="d-flex justify-content-between">
-            <div>{farmer.farmerName || "Farmer Name"}</div>
-            <div style={{ color: "#6B7280" }}>
-              {farmer.farmerMobile || "Farmer Mobile"}
-            </div>
-          </div>
-        </h5>
-        <div className="d-flex">
-          <div className="fw-bold" style={{ width: "30%" }}>
-            Location :
-          </div>
-          <div style={{ width: "70%" }}>
-            <p style={{ color: "#6B7280" }}>
-              {farmer.province}, {farmer.districtName}, {farmer.villageName}
-            </p>
-          </div>
+      <div className="d-flex justify-content-between">
+        <div
+          style={{ cursor: "pointer" }}
+          className="my-4"
+          onClick={() => navigate("/ListFarmer")}
+        >
+          <FontAwesomeIcon
+            icon={faChevronLeft}
+            style={{ marginRight: "5px" }}
+          />
+          <b>Farmers Details</b>
         </div>
-      </Card>
-
-      <div className="my-3">
-        {Object.entries(sections).map(([sectionName, cards]) => (
-          <Card key={sectionName} className="p-2 my-2">
-            <h2 className="text-xl font-bold mb-2">
-              {sectionName.replace(/_/g, " ")}
-            </h2>
-            <div>
-              <Row className="mb-1">
-                {cards.map((cardObj, index) =>
-                  Object.entries(cardObj).map(([cardType, items]) => {
-                    if (cardType === "green_card") {
-                      return (
-                        <Col key={`green-card-${index}`} md={12}>
-                          <Card className="flex-fill h-100">
-                            <div
-                              className="rounded-top py-2 px-4"
-                              style={greenCardStyle}
-                            >
-                              <div className="d-flex align-items-center gap-2">
-                                <FontAwesomeIcon icon={faThumbsUp} />
-                                <h6 className="mb-0">BEST BET</h6>
-                              </div>
-                              <p className="p-0 m-0">
-                                Encouraged practices that can help
-                              </p>
-                            </div>
-                            <Card.Body className="p-0 m-0 bg-card-body">
-                              <Card.Text className="p-2">
-                                {items.map((item, id) => (
-                                  <p key={id} className="p-0 m-0">
-                                    {id + 1}.{" "}
-                                    <span style={{ color: "#6B7280" }}>
-                                      {item}
-                                    </span>
-                                  </p>
-                                ))}
-                              </Card.Text>
-                            </Card.Body>
-                          </Card>
-                        </Col>
-                      );
-                    }
-                    return null;
-                  })
-                )}
-              </Row>
-
-              <Row className="gap-2">
-                {cards.map((cardObj, index) =>
-                  Object.entries(cardObj).map(([cardType, items]) => {
-                    if (
-                      cardType === "yellow_card" ||
-                      cardType === "gray_card"
-                    ) {
-                      return (
-                        <Col
-                          key={`${cardType}-${index}`}
-                          md={6}
-                          sm={12}
-                          className="mb-1"
-                        >
-                          <Card className="flex-fill h-100">
-                            <div
-                              className="rounded-top py-2 px-4"
-                              style={
-                                cardType === "yellow_card"
-                                  ? yellowCardStyle
-                                  : grayCardStyle
-                              }
-                            >
-                              <div className="d-flex align-items-center gap-2">
-                                <FontAwesomeIcon
-                                  icon={
-                                    cardType === "yellow_card"
-                                      ? faTriangleExclamation
-                                      : faThumbsDown
-                                  }
-                                />
-                                <h6 className="mb-0">
-                                  {cardType === "yellow_card"
-                                    ? "VIABLE"
-                                    : "LESS VIABLE"}
-                                </h6>
-                              </div>
-                              <p className="p-0 m-0">
-                                {cardType === "yellow_card"
-                                  ? "Tryout with Caution"
-                                  : "Practices with Challenges"}
-                              </p>
-                            </div>
-                            <Card.Body className="p-0 m-0 bg-card-body">
-                              <Card.Text className="p-2">
-                                {items.map((item, idx) => (
-                                  <p key={idx} className="p-0 m-0">
-                                    {idx + 1}.{" "}
-                                    <span style={{ color: "#6B7280" }}>
-                                      {item}
-                                    </span>
-                                  </p>
-                                ))}
-                              </Card.Text>
-                            </Card.Body>
-                          </Card>
-                        </Col>
-                      );
-                    }
-                    return null;
-                  })
-                )}
-              </Row>
+        <div className="my-4">
+          <Button
+            onClick={captureAndShare}
+            style={{
+              borderRadius: "6px",
+              background: "#279A82",
+              border: "1px solid #279A82",
+              background: "#FFFFFF",
+              color: "#FFFFFF",
+              fontWeight: 500,
+            }}
+          >
+            <FontAwesomeIcon icon={faShare} color="#279A82" />
+          </Button>
+        </div>
+      </div>
+      <div id="capture-area">
+        <Card className="p-2">
+          <h5>
+            <div className="d-flex justify-content-between">
+              <div>{farmer.farmerName || "Farmer Name"}</div>
+              <div style={{ color: "#6B7280" }}>
+                {farmer.farmerMobile || "Farmer Mobile"}
+              </div>
             </div>
-          </Card>
-        ))}
+          </h5>
+          <div className="d-flex">
+            <div className="fw-bold" style={{ width: "30%" }}>
+              Location :
+            </div>
+            <div style={{ width: "70%" }}>
+              <p style={{ color: "#6B7280" }}>
+                {farmer.province}, {farmer.districtName}, {farmer.villageName}
+              </p>
+            </div>
+          </div>
+        </Card>
+
+        <div className="my-3">
+          {Object.entries(sections).map(([sectionName, cards]) => (
+            <Card key={sectionName} className="p-2 my-2">
+              <h2 className="text-xl font-bold mb-2">
+                {sectionName.replace(/_/g, " ")}
+              </h2>
+              <div>
+                <Row className="mb-1">
+                  {cards.map((cardObj, index) =>
+                    Object.entries(cardObj).map(([cardType, items]) => {
+                      if (cardType === "green_card") {
+                        return (
+                          <Col key={`green-card-${index}`} md={12}>
+                            <Card className="flex-fill h-100">
+                              <div
+                                className="rounded-top py-2 px-4"
+                                style={greenCardStyle}
+                              >
+                                <div className="d-flex align-items-center gap-2">
+                                  <FontAwesomeIcon icon={faThumbsUp} />
+                                  <h6 className="mb-0">BEST BET</h6>
+                                </div>
+                                <p className="p-0 m-0">
+                                  Encouraged practices that can help
+                                </p>
+                              </div>
+                              <Card.Body className="p-0 m-0 bg-card-body">
+                                <Card.Text className="p-2">
+                                  {items.map((item, id) => (
+                                    <p key={id} className="p-0 m-0">
+                                      {id + 1}.{" "}
+                                      <span style={{ color: "#6B7280" }}>
+                                        {item}
+                                      </span>
+                                    </p>
+                                  ))}
+                                </Card.Text>
+                              </Card.Body>
+                            </Card>
+                          </Col>
+                        );
+                      }
+                      return null;
+                    })
+                  )}
+                </Row>
+
+                <Row className="gap-2">
+                  {cards.map((cardObj, index) =>
+                    Object.entries(cardObj).map(([cardType, items]) => {
+                      if (
+                        cardType === "yellow_card" ||
+                        cardType === "gray_card"
+                      ) {
+                        return (
+                          <Col
+                            key={`${cardType}-${index}`}
+                            md={6}
+                            sm={12}
+                            className="mb-1"
+                          >
+                            <Card className="flex-fill h-100">
+                              <div
+                                className="rounded-top py-2 px-4"
+                                style={
+                                  cardType === "yellow_card"
+                                    ? yellowCardStyle
+                                    : grayCardStyle
+                                }
+                              >
+                                <div className="d-flex align-items-center gap-2">
+                                  <FontAwesomeIcon
+                                    icon={
+                                      cardType === "yellow_card"
+                                        ? faTriangleExclamation
+                                        : faThumbsDown
+                                    }
+                                  />
+                                  <h6 className="mb-0">
+                                    {cardType === "yellow_card"
+                                      ? "VIABLE"
+                                      : "LESS VIABLE"}
+                                  </h6>
+                                </div>
+                                <p className="p-0 m-0">
+                                  {cardType === "yellow_card"
+                                    ? "Tryout with Caution"
+                                    : "Practices with Challenges"}
+                                </p>
+                              </div>
+                              <Card.Body className="p-0 m-0 bg-card-body">
+                                <Card.Text className="p-2">
+                                  {items.map((item, idx) => (
+                                    <p key={idx} className="p-0 m-0">
+                                      {idx + 1}.{" "}
+                                      <span style={{ color: "#6B7280" }}>
+                                        {item}
+                                      </span>
+                                    </p>
+                                  ))}
+                                </Card.Text>
+                              </Card.Body>
+                            </Card>
+                          </Col>
+                        );
+                      }
+                      return null;
+                    })
+                  )}
+                </Row>
+              </div>
+            </Card>
+          ))}
+        </div>
       </div>
 
       <Row className="mb-3">
