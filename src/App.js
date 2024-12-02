@@ -93,7 +93,7 @@ function App() {
 
               <div className="d-flex justify-content-center mt-3 mt-sm-0">
                 <h3>
-                  <b>AgroTutor</b>
+                  <b style={{ fontWeight: "800" }}>AgroTutor</b>
                 </h3>
               </div>
             </div>

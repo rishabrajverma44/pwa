@@ -112,7 +112,7 @@ code {
 }
 
 b, strong {
-  font-weight: bolder !important;
+  font-weight: 800 !important;
   color: #003B49 !important;
 }
 

@@ -334,7 +334,7 @@ const FarmerDetails = () => {
           navigator
             .share({
               files: [file],
-              title: "Check out this screenshot!",
+              title: `share screenshot for ${farmer.farmerName}`,
               text: "Sharing an image from my app!",
             })
             .then(() => console.log("Share was successful."))

@@ -360,20 +360,21 @@ const AddFrpmNew = () => {
 
               <Form.Check
                 type="checkbox"
-                id="Sweet "
-                label="Sweet "
-                value="Sweet "
-                checked={formData.selectedItems.includes("Sweet ")}
+                id="Tea"
+                label="Tea"
+                value="Tea"
+                className="my-2"
+                checked={formData.selectedItems.includes("Tea")}
                 onChange={handleCheckboxChange}
               />
 
               <Form.Check
                 type="checkbox"
-                id="Potato"
-                label="Potato"
-                value="Potato"
+                id="Sweet Potato"
+                label="Sweet Potato"
+                value="Sweet Potato"
                 className="my-2"
-                checked={formData.selectedItems.includes("Potato")}
+                checked={formData.selectedItems.includes("Sweet Potato")}
                 onChange={handleCheckboxChange}
               />
 

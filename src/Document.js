@@ -119,7 +119,7 @@ const DocumentViewer = () => {
             SI Training Strategy 2024-07
           </Button>
 
-          <Button
+          {/* <Button
             size="lg"
             className="btnSI"
             style={{
@@ -145,7 +145,7 @@ const DocumentViewer = () => {
             onClick={() => handleOpenVideo(4)}
           >
             Play Video 2
-          </Button>
+          </Button> */}
         </div>
 
         <Row className="mt-4">
