@@ -250,8 +250,8 @@ const ListFarmer = () => {
 
   return (
     <Container className="my-4">
-      <Row>
-        <Col
+      <div className="d-flex justify-content-between">
+        <div
           style={{ cursor: "pointer" }}
           className="my-4"
           onClick={() => navigate("/")}
@@ -261,8 +261,8 @@ const ListFarmer = () => {
             style={{ marginRight: "5px" }}
           />
           <b>List of Farmers</b>
-        </Col>
-        <Col className="my-4">
+        </div>
+        <div className="my-4">
           <Button
             onClick={sync}
             style={{
@@ -276,8 +276,8 @@ const ListFarmer = () => {
           >
             <FaSync color="#279A82" />
           </Button>
-        </Col>
-      </Row>
+        </div>
+      </div>
       <Row>
         <Col>
           <Form.Group
